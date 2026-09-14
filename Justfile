@@ -82,6 +82,11 @@ proto-format:
 
 # --- Docker (scripts/compose.yaml) ---
 
+# Build and publish the stable Docker image. Run `podman login docker.io` first.
+docker-publish: web-release
+    @podman build --file scripts/Dockerfile --target monolithic --build-arg VERSION=dev --build-arg COMMIT="$(git rev-parse --short HEAD)" --tag docker.io/silentfellow/trace:stable .
+    @podman push docker.io/silentfellow/trace:stable
+
 # Start the app via podman compose (detached).
 docker-up:
     @podman compose -f scripts/compose.yaml up -d

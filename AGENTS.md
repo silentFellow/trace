@@ -71,6 +71,7 @@ just proto-lint          # cd proto && buf lint — lint proto files
 just proto-format        # cd proto && buf format -w — format proto files
 
 # Docker (scripts/compose.yaml)
+just docker-publish      # build and push docker.io/silentfellow/trace:stable — run `podman login docker.io` first
 just docker-up           # podman compose -f scripts/compose.yaml up -d
 just docker-down         # podman compose -f scripts/compose.yaml down
 just docker-logs         # podman compose -f scripts/compose.yaml logs -f
