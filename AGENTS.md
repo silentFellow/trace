@@ -3,6 +3,14 @@
 Repository instructions for AI coding agents. Keep this file short, concrete, and tied to commands that actually work in this
 repo. If a fact here conflicts with source files or CI config, trust the source file and update this guide.
 
+## Rebranding
+
+This fork is branded "Trace" (was "Memos" upstream) in user-facing text: README.md, CONTEXT.md, SECURITY.md, web/index.html,
+web/package.json, scripts/compose.yaml, CODEOWNERS. The Go module path, `MEMOS_*` env vars, CLI binary name, database
+tables/columns, proto packages, RPC names, and the `memo`/`memos` domain vocabulary are unchanged on purpose — renaming those
+would break real behavior and diverge from upstream. See `docs/rebranding-todo.md` for what was deferred or removed rather
+than guessed, and check it before touching any of the files above.
+
 ## Project Snapshot
 
 Memos is a self-hosted note-taking app.

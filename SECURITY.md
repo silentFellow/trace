@@ -2,13 +2,13 @@
 
 ## Supported Versions
 
-Memos is currently a `0.x` project. Security fixes are only provided for the latest release. Older releases are not supported for security updates, and fixes are not backported.
+Trace is currently a `0.x` project. Security fixes are only provided for the latest release. Older releases are not supported for security updates, and fixes are not backported.
 
-If you run Memos in production, keep your instance updated to the latest release.
+If you run Trace in production, keep your instance updated to the latest release.
 
 ## Reporting a Vulnerability
 
-Please report security issues privately by email: `dev@usememos.com`
+Please report security issues privately by email: `gowtham.sri+github@zohomail.in`
 
 Do not open public GitHub issues, discussions, or pull requests for suspected vulnerabilities.
 
@@ -24,15 +24,15 @@ We will review reports as time permits and fix valid issues in regular releases.
 
 ## Disclosure and CVEs
 
-Memos is self-hosted software and is still in the `0.x` stage. At this stage, we do not run a formal disclosure program, publish separate security advisories for every issue, or request CVE IDs.
+Trace is self-hosted software and is still in the `0.x` stage. At this stage, we do not run a formal disclosure program, publish separate security advisories for every issue, or request CVE IDs.
 
 Security fixes may be shipped directly in normal releases or noted briefly in release notes and changelogs.
 
 ## Self-Hosted Deployment Notes
 
-The security posture of a Memos instance depends heavily on how it is deployed and operated. In particular:
+The security posture of a Trace instance depends heavily on how it is deployed and operated. In particular:
 
-- Keep Memos updated
+- Keep Trace updated
 - Put it behind a properly configured reverse proxy when exposed to the internet
 - Require authentication for any non-public deployment
 - Use TLS in production

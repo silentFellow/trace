@@ -1,6 +1,6 @@
-# Memos
+# Trace
 
-Memos is the note-taking domain centered on short-form memos and the resources attached to them.
+Trace is the note-taking domain centered on short-form memos and the resources attached to them.
 
 ## Language
 
