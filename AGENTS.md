@@ -29,6 +29,12 @@ Memos is a self-hosted note-taking app.
 - Add public API endpoints to `server/api/v1/acl_config.go`.
 - Ask before adding heavy dependencies, changing auth/token behavior, or altering Docker/release workflows.
 
+## Known Local Test Failures
+
+`just test` / `go test ./...` currently fails on this local podman setup for reasons unrelated to the product
+(TestContainers can't find a `bridge` network, plus two smaller unconfirmed environment-specific failures). See
+`docs/known-test-failures.md` before assuming a red `just test` run means broken code — check it against that list first.
+
 ## Environment Setup
 
 `mise.toml` pins the toolchain to what CI actually runs (Go 1.27.0, Node 24, pnpm 11.0.1, golangci-lint v2.13.1); `buf` and
