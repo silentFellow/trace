@@ -29,34 +29,45 @@ Memos is a self-hosted note-taking app.
 - Add public API endpoints to `server/api/v1/acl_config.go`.
 - Ask before adding heavy dependencies, changing auth/token behavior, or altering Docker/release workflows.
 
+## Environment Setup
+
+`mise.toml` pins the toolchain to what CI actually runs (Go 1.27.0, Node 24, pnpm 11.0.1, golangci-lint v2.13.1); `buf` and
+`just` itself float on latest since CI doesn't pin them. Run `mise install` once per checkout. Every command below is also a
+`just` recipe (`Justfile`) — run `just` with no arguments to list them all.
+
 ## Commands
 
-Run from the repository root unless a command starts with `cd`.
+Run `just <recipe>` from the repository root. Raw commands are shown for reference; `cd` is only needed if you bypass `just`.
 
 ```bash
 # Backend
-go run ./cmd/memos --port 8081    # Start backend dev server
-go test ./...                      # Run all Go tests
-go test -v ./store/...             # Store tests, including DB drivers via TestContainers
-go test -v -race ./server/...      # Server tests with race detector
-go test -v -race ./internal/...    # Internal package tests with race detector
-go test -v -run TestFoo ./core/... # Run matching Go tests in one tree
-go mod tidy -go=1.27.0             # Match CI tidy check
-golangci-lint run                  # Go lint, config: .golangci.yaml (includes depguard layering rules)
-golangci-lint run --fix            # Auto-fix lint, including goimports
+just dev                # go run ./cmd/memos --port 8081 — start backend dev server
+just test               # go test ./... — run all Go tests
+just test-store         # go test -v ./store/... — store tests, including DB drivers via TestContainers
+just test-server        # go test -v -race ./server/... — server tests with race detector
+just test-internal      # go test -v -race ./internal/... — internal package tests with race detector
+just test-one core TestFoo  # go test -v -run TestFoo ./core/... — run matching Go tests in one tree
+just tidy               # go mod tidy -go=1.27.0 — match CI tidy check
+just lint               # golangci-lint run — config: .golangci.yaml (includes depguard layering rules)
+just lint-fix           # golangci-lint run --fix — auto-fix lint, including goimports
 
 # Frontend
-cd web && pnpm install             # Install dependencies
-cd web && pnpm dev                 # Dev server on :3001, proxying API to :8081
-cd web && pnpm lint                # Type check + Biome lint
-cd web && pnpm test                # Vitest unit tests
-cd web && pnpm build               # Production build
-cd web && pnpm release             # Build SPA into server/frontend/dist
+just web-install         # cd web && pnpm install — install dependencies
+just web-dev             # cd web && pnpm dev — dev server on :3001, proxying API to :8081
+just web-lint            # cd web && pnpm lint — type check + Biome lint
+just web-test            # cd web && pnpm test — Vitest unit tests
+just web-build           # cd web && pnpm build — production build
+just web-release         # cd web && pnpm release — build SPA into server/frontend/dist
 
 # Protocol Buffers
-cd proto && buf generate           # Regenerate Go + TypeScript + OpenAPI
-cd proto && buf lint               # Lint proto files
-cd proto && buf format -w          # Format proto files
+just proto-generate      # cd proto && buf generate — regenerate Go + TypeScript + OpenAPI
+just proto-lint          # cd proto && buf lint — lint proto files
+just proto-format        # cd proto && buf format -w — format proto files
+
+# Docker (scripts/compose.yaml)
+just docker-up           # podman compose -f scripts/compose.yaml up -d
+just docker-down         # podman compose -f scripts/compose.yaml down
+just docker-logs         # podman compose -f scripts/compose.yaml logs -f
 ```
 
 ## Repository Layout
