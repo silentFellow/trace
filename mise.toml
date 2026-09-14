@@ -1,0 +1,11 @@
+[tools]
+# Pinned to match what CI actually runs (see .github/workflows/backend-tests.yml
+# and frontend-tests.yml). Keep these in sync when either workflow changes.
+go = "1.27.0"
+node = "24"
+pnpm = "11.0.1"
+golangci-lint = "v2.13.1"
+
+# Not pinned by CI, so left on latest.
+buf = "latest"
+just = "latest"
