@@ -5,6 +5,9 @@
 /memos
 /memos.exe
 coverage.out
+*.db
+*.db-shm
+*.db-wal
 # Frontend bundles: web/dist from `pnpm build`, and
 # server/frontend/dist from `pnpm release`, which go:embed bakes
 # into the binary.
