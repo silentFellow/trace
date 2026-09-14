@@ -1,0 +1,53 @@
+/* Catppuccin Mocha — https://catppuccin.com/palette (Mocha flavor) */
+:root {
+  /* Surfaces - Base/Mantle, the flavor's darkest layers */
+  --background: oklch(0.221 0.028 293.6);
+  --foreground: oklch(0.878 0.032 275.9);
+
+  --card: oklch(0.191 0.031 291.3);
+  --card-foreground: oklch(0.878 0.032 275.9);
+
+  --popover: oklch(0.191 0.031 291.3);
+  --popover-foreground: oklch(0.878 0.032 275.9);
+
+  /* Primary - Mauve, Catppuccin's flagship accent */
+  --primary: oklch(0.799 0.101 306.3);
+  --primary-foreground: oklch(0.221 0.028 293.6);
+
+  /* Secondary - Surface0 */
+  --secondary: oklch(0.348 0.026 288.7);
+  --secondary-foreground: oklch(0.878 0.032 275.9);
+
+  /* Muted - Surface0 background, Subtext0 foreground */
+  --muted: oklch(0.348 0.026 288.7);
+  --muted-foreground: oklch(0.72 0.027 280.6);
+
+  /* Accent - Surface1, one step lighter than muted for hover states */
+  --accent: oklch(0.42 0.026 288.4);
+  --accent-foreground: oklch(0.878 0.032 275.9);
+
+  /* Destructive - Red */
+  --destructive: oklch(0.727 0.143 12.9);
+  --destructive-foreground: oklch(0.221 0.028 293.6);
+
+  /* Feedback - Green (success) and Yellow (warning) */
+  --success: oklch(0.834 0.117 148.4);
+  --success-foreground: oklch(0.221 0.028 293.6);
+  --warning: oklch(0.895 0.081 91.6);
+  --warning-foreground: oklch(0.221 0.028 293.6);
+
+  --shadow-float: 0 1px 2px hsl(0 0% 0% / 0.3), 0 8px 24px -6px hsl(0 0% 0% / 0.4), 0 24px 56px -16px hsl(0 0% 0% / 0.5);
+
+  /* Borders - Surface1/Surface2, Mauve for focus rings */
+  --border: oklch(0.42 0.026 288.4);
+  --input: oklch(0.48 0.027 287.5);
+  --ring: oklch(0.799 0.101 306.3);
+
+  --overlay: oklch(0 0 0);
+
+  /* Sidebar - Mantle/Crust, one layer darker than the main background */
+  --sidebar: oklch(0.161 0.027 292.2);
+  --sidebar-foreground: oklch(0.72 0.027 280.6);
+  --sidebar-accent: oklch(0.348 0.026 288.7);
+  --sidebar-accent-foreground: oklch(0.878 0.032 275.9);
+}

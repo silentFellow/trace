@@ -4,9 +4,14 @@ default:
 
 # --- Backend ---
 
-# Start the backend dev server on :8081.
+# Start backend (:8081) and frontend (:3001) dev servers together, with live frontend reload.
 dev:
-    @go run ./cmd/memos --port 8081
+    #!/usr/bin/env bash
+    set -euo pipefail
+    trap 'kill 0' EXIT INT TERM
+    go run ./cmd/memos --port 8081 &
+    (cd web && pnpm dev) &
+    wait
 
 # Run all Go tests.
 test:
