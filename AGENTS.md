@@ -47,7 +47,7 @@ Run `just <recipe>` from the repository root. Raw commands are shown for referen
 
 ```bash
 # Backend
-just dev                # go run ./cmd/memos --port 8081 — start backend dev server
+just dev                # pnpm release && go run ./cmd/memos --port 8081 — rebuilds the embedded frontend, then starts the backend dev server
 just test               # go test ./... — run all Go tests
 just test-store         # go test -v ./store/... — store tests, including DB drivers via TestContainers
 just test-server        # go test -v -race ./server/... — server tests with race detector

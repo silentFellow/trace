@@ -4,8 +4,8 @@ default:
 
 # --- Backend ---
 
-# Start the backend dev server on :8081.
-dev:
+# Rebuild the embedded frontend, then start the backend dev server on :8081.
+dev: web-release
     @go run ./cmd/memos --port 8081
 
 # Run all Go tests.
