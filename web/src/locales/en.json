@@ -188,6 +188,7 @@
     "expand": "Expand",
     "expand-panel": "Expand panel",
     "explore": "Explore",
+    "export": "Export",
     "file": "File",
     "filter": "Filter",
     "home": "Home",
@@ -349,6 +350,24 @@
       "unsupported": "Audio recording unsupported",
       "unsupported-description": "This browser cannot record audio from the memo composer."
     }
+  },
+  "export": {
+    "date-range": "Date range",
+    "everything": "Everything",
+    "exclude-tags": "Exclude tags",
+    "export-markdown": "Export Markdown",
+    "export-pdf": "Export PDF",
+    "failed": "Export failed. Try again.",
+    "include-archived": "Include archived notes",
+    "include-tags": "Include tags",
+    "preset-all-time": "All time",
+    "preset-last-30-days": "Last 30 days",
+    "preset-last-7-days": "Last 7 days",
+    "preset-this-month": "This month",
+    "preset-today": "Today",
+    "scope": "Space",
+    "title": "Export notes",
+    "truncated": "Too many notes match — narrow the filters and try again."
   },
   "inbox": {
     "failed-to-load": "Failed to load inbox item",

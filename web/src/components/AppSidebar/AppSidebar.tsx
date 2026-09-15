@@ -5,6 +5,7 @@ import {
   BellIcon,
   CalendarDaysIcon,
   ChevronDownIcon,
+  DownloadIcon,
   EarthIcon,
   FileAudioIcon,
   FileTextIcon,
@@ -23,8 +24,9 @@ import {
   Trash2Icon,
   UserRoundIcon,
 } from "lucide-react";
-import { type ReactNode, useEffect, useMemo } from "react";
+import { type ReactNode, useEffect, useMemo, useState } from "react";
 import { Link, matchPath, useLocation, useNavigate } from "react-router-dom";
+import { ExportDialog } from "@/components/Export/ExportDialog";
 import { MAP_MEMO_FILTER } from "@/components/MapView/useMapMemos";
 import { MemoDetailSidebar } from "@/components/MemoDetailSidebar";
 import { DEFAULT_SETTING_SECTION, SETTINGS_SECTIONS } from "@/components/Settings/settingSections";
@@ -639,6 +641,7 @@ const AppSidebar = ({ className }: { className?: string }) => {
   const currentUser = useCurrentUser();
   const { setMobileOpen } = useAppSidebar();
   const { canOpen: canCompose, openEditor } = useGlobalMemoEditor();
+  const [exportOpen, setExportOpen] = useState(false);
   return (
     <aside className={cn("flex h-full w-full select-none flex-col bg-sidebar text-sidebar-foreground", className)}>
       <div data-sidebar-header className={cn("flex h-13 shrink-0 items-center justify-between gap-2", SIDEBAR_RAIL_CLASSES)}>
@@ -651,6 +654,23 @@ const AppSidebar = ({ className }: { className?: string }) => {
         <RouteSidebarContent />
       </div>
       <footer className="shrink-0 border-t border-border/70">
+        {currentUser && (
+          <button
+            type="button"
+            onClick={() => setExportOpen(true)}
+            className={cn(
+              sidebarSurfaceVariants({ role: "account" }),
+              "group text-[13px] font-medium text-foreground transition-colors hover:bg-sidebar-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring/50",
+            )}
+          >
+            <span className={SIDEBAR_LEADING_SLOT_CLASSES}>
+              <DownloadIcon className="me-auto size-4 text-muted-foreground" strokeWidth={1.8} />
+            </span>
+            <span data-sidebar-label className="min-w-0 flex-1 truncate">
+              {t("common.export")}
+            </span>
+          </button>
+        )}
         {currentUser ? (
           <UserMenu />
         ) : (
@@ -676,6 +696,7 @@ const AppSidebar = ({ className }: { className?: string }) => {
           </Link>
         )}
       </footer>
+      <ExportDialog open={exportOpen} onOpenChange={setExportOpen} />
     </aside>
   );
 };

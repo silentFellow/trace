@@ -188,6 +188,7 @@
     "expand": "Aç",
     "expand-panel": "Paneli genişləndir",
     "explore": "Kəşf et",
+    "export": "İxrac",
     "file": "Fayl",
     "filter": "Süzgəc",
     "home": "Əsas səhifə",
@@ -349,6 +350,24 @@
       "unsupported": "Audio yazısı dəstəklənmir",
       "unsupported-description": "Bu brauzer qeyd redaktorundan audio yaza bilmir."
     }
+  },
+  "export": {
+    "date-range": "Tarix aralığı",
+    "everything": "Hamısı",
+    "exclude-tags": "Etiketləri xaric et",
+    "export-markdown": "Markdown ixrac et",
+    "export-pdf": "PDF ixrac et",
+    "failed": "İxrac uğursuz oldu. Yenidən cəhd edin.",
+    "include-archived": "Arxivlənmiş qeydləri daxil et",
+    "include-tags": "Etiketləri daxil et",
+    "preset-all-time": "Bütün vaxt",
+    "preset-last-30-days": "Son 30 gün",
+    "preset-last-7-days": "Son 7 gün",
+    "preset-this-month": "Bu ay",
+    "preset-today": "Bu gün",
+    "scope": "Məkan",
+    "title": "Qeydləri ixrac et",
+    "truncated": "Çox sayda qeyd uyğun gəlir — filtrləri daraldın və yenidən cəhd edin."
   },
   "inbox": {
     "failed-to-load": "Gələnlər elementi yüklənmədi",
