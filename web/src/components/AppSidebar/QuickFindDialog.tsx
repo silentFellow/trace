@@ -70,6 +70,7 @@ export const resolveQuickFindSubmission = (
 const getScopeLabel = (pathname: string, t: ReturnType<typeof useTranslate>) => {
   const routeKind = getSidebarRouteKind(pathname);
   if (routeKind === "archived") return t("common.archived");
+  if (routeKind === "scratchpad") return t("common.scratchpad");
   if (routeKind === "explore") return t("common.explore");
   if (routeKind === "profile") return t("common.profile");
   return t("common.memos");

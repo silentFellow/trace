@@ -68,6 +68,17 @@ describe("Quick Find", () => {
     });
   });
 
+  it.each(["/spaces/a/scratchpad", "/scratchpad"])("keeps scoped filters and stays on %s", (pathname) => {
+    expect(resolveQuickFindSubmission(pathname, "project", scopedFilters, "text")).toEqual({
+      filters: [
+        { factor: "tagSearch", value: "work" },
+        { factor: "displayTime", value: "2026-08-03" },
+        { factor: "contentSearch", value: "project" },
+      ],
+      destination: undefined,
+    });
+  });
+
   it("searches Archived as a user collection", () => {
     expect(resolveQuickFindSubmission("/archived", "project", scopedFilters, "text")).toEqual({
       filters: [

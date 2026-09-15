@@ -47,6 +47,9 @@ export const getRouteActionPolicy = (path: string): RouteActionPolicy => {
   const kind = getSidebarRouteKind(path);
 
   if (kind === "home" || kind === "explore") return { searchScope: "route-collection" };
+  // Scratchpad pages are memo lists themselves, so a search stays on the
+  // route and covers just the scratchpad(s) in view.
+  if (kind === "scratchpad") return { searchScope: "route-collection" };
   if (kind === "archived") return { searchScope: "user-collection" };
 
   // Calendar and attachments browse the route collection but are not memo lists

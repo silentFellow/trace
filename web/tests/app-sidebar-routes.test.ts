@@ -39,6 +39,12 @@ describe("sidebar route content", () => {
     });
   });
 
+  it.each(["/spaces/a/scratchpad", "/scratchpad"])("keeps search in the scratchpads in view on %s", (path) => {
+    expect(getRouteActionPolicy(path)).toEqual({
+      searchScope: "route-collection",
+    });
+  });
+
   it.each(["/archived", "/ARCHIVED/"])("keeps %s in the user archive", (path) => {
     expect(getRouteActionPolicy(path)).toEqual({
       searchScope: "user-collection",
