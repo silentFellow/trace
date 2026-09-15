@@ -3,6 +3,7 @@ package v1
 import (
 	"context"
 	stderrors "errors"
+	"regexp"
 
 	"github.com/pkg/errors"
 	"google.golang.org/grpc/codes"
@@ -97,6 +98,42 @@ func (s *APIV1Service) resolveMemoAccessScope(ctx context.Context) (*store.MemoA
 		accessScope.ExcludeSpaceIDs = excluded
 	}
 	return accessScope, currentUser, nil
+}
+
+// explicitSpaceFilterPattern matches the single-condition space-scope filter
+// the frontend sends when a request is scoped to exactly one Space (see
+// buildCollectionScopeFilter and the Scratchpad page), e.g. `space ==
+// "spaces/abc123"`.
+var explicitSpaceFilterPattern = regexp.MustCompile(`^\s*space\s*==\s*"([^"]+)"\s*$`)
+
+// allowExplicitlyRequestedSpace lets a caller see their own timeline-excluded
+// Space (their Scratchpad) when a request explicitly names it, without
+// opening that Space to any other all-scope query. timelineExcludedSpaceIDs
+// only ever includes Spaces the caller is a member of, so a name match here
+// is already proof of ownership; this does not affect any other Space.
+func (s *APIV1Service) allowExplicitlyRequestedSpace(ctx context.Context, accessScope *store.MemoAccessScope, filter string) {
+	if len(accessScope.ExcludeSpaceIDs) == 0 {
+		return
+	}
+	match := explicitSpaceFilterPattern.FindStringSubmatch(filter)
+	if match == nil {
+		return
+	}
+	spaceUID, err := ExtractSpaceUIDFromName(match[1])
+	if err != nil {
+		return
+	}
+	space, err := s.Store.GetSpace(ctx, &store.FindSpace{UID: &spaceUID})
+	if err != nil || space == nil {
+		return
+	}
+	remaining := accessScope.ExcludeSpaceIDs[:0]
+	for _, id := range accessScope.ExcludeSpaceIDs {
+		if id != space.ID {
+			remaining = append(remaining, id)
+		}
+	}
+	accessScope.ExcludeSpaceIDs = remaining
 }
 
 // timelineExcludedSpaceIDs returns the Space IDs the caller is a member of

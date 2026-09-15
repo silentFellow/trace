@@ -91,6 +91,9 @@ func (s *APIV1Service) ListMemos(ctx context.Context, request *v1pb.ListMemosReq
 	if currentUser == nil && !accessScope.AllowPublic {
 		return nil, status.Errorf(codes.Unauthenticated, "user not authenticated")
 	}
+	if currentUser != nil && request.Filter != "" {
+		s.allowExplicitlyRequestedSpace(ctx, accessScope, request.Filter)
+	}
 	memoFind.Access = accessScope
 
 	if request.State == v1pb.State_ARCHIVED {
