@@ -37,9 +37,7 @@ export async function fetchExportMemos(input: FetchExportMemosInput): Promise<{ 
   }
   const excluded = new Set(input.excludeTags);
   return {
-    memos: collected
-      .filter((memo) => (memo.tags ?? []).every((tag) => !excluded.has(tag)))
-      .sort((a, b) => memoTime(a) - memoTime(b)),
+    memos: collected.filter((memo) => (memo.tags ?? []).every((tag) => !excluded.has(tag))).sort((a, b) => memoTime(a) - memoTime(b)),
     truncated: false,
   };
 }
