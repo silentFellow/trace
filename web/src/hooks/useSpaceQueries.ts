@@ -57,6 +57,7 @@ export const spaceKeys = {
   lists: () => [...spaceKeys.all, "list"] as const,
   list: (viewerName: string) => [...spaceKeys.lists(), viewerName] as const,
   space: (viewerName: string, spaceName: string) => [...spaceKeys.all, "space", viewerName, spaceName] as const,
+  scratchpad: (viewerName: string, parentSpaceName: string) => [...spaceKeys.all, "scratchpad", viewerName, parentSpaceName] as const,
   members: (viewerName: string, spaceName: string) => [...spaceKeys.space(viewerName, spaceName), "members"] as const,
   spaceInvitations: (viewerName: string, spaceName: string) => [...spaceKeys.space(viewerName, spaceName), "invitations"] as const,
   userInvitations: (viewerName: string) => [...spaceKeys.all, "user-invitations", viewerName] as const,
@@ -135,6 +136,15 @@ export function useSpaces(viewerName: string | undefined, options?: SpaceQueryOp
 }
 
 /** Fetches the route Space; the switcher list seeds it so collection pages are not held behind a second round-trip. */
+export function useSpaceScratchpad(viewerName: string | undefined, parentSpaceName: string | undefined, options?: SpaceQueryOptions) {
+  return useQuery<Space, ConnectError>({
+    queryKey: spaceKeys.scratchpad(viewerName ?? "", parentSpaceName ?? ""),
+    queryFn: () => spaceServiceClient.getOrCreateSpaceScratchpad({ parent: parentSpaceName ?? "" }),
+    enabled: queryEnabled(viewerName, parentSpaceName, options),
+    retry: (count, error) => !hasConnectCode(error, Code.NotFound, Code.PermissionDenied) && count < 2,
+  });
+}
+
 export function useSpace(viewerName: string | undefined, spaceName: string | undefined) {
   const queryClient = useQueryClient();
   const listKey = spaceKeys.list(viewerName ?? "");

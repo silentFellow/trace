@@ -44,13 +44,13 @@ import { useAttachmentLibraryStats } from "@/hooks/useAttachmentLibrary";
 import useCurrentUser from "@/hooks/useCurrentUser";
 import { type MemoStatsContext, useFilteredMemoStats } from "@/hooks/useFilteredMemoStats";
 import useMediaQuery from "@/hooks/useMediaQuery";
-import { useSpaces } from "@/hooks/useSpaceQueries";
+import { useSpaceScratchpad } from "@/hooks/useSpaceQueries";
 import { useNotifications, useUser } from "@/hooks/useUserQueries";
 import { combineCELFilters } from "@/lib/cel-filter";
 import { getMemoScopePath, getProfileUsername, type PrimaryMemoScope, resolveMemoScope } from "@/lib/memo-views";
 import { userNamePrefix } from "@/lib/resource-names";
 import { cn } from "@/lib/utils";
-import { buildSpaceScratchpadPath, collectionPathForLocation, ROUTES } from "@/router/routes";
+import { buildSpaceScratchpadPath, collectionPathForLocation, ROUTES, resolveSpaceScratchpadRoute } from "@/router/routes";
 import { State } from "@/types/proto/api/v1/common_pb";
 import { User_Role, UserNotification_Status } from "@/types/proto/api/v1/user_service_pb";
 import { useTranslate } from "@/utils/i18n";
@@ -155,8 +155,13 @@ const ScratchpadSidebarContent = () => {
   const { isInitialized: authInitialized } = useAuth();
   const { isInitialized: instanceInitialized } = useInstance();
   const md = useMediaQuery("md");
-  const spacesQuery = useSpaces(currentUser?.name, { includeScratchpad: true });
-  const scratchpadSpace = spacesQuery.data?.find((space) => space.isScratchpad);
+  const location = useLocation();
+  // The sidebar lives outside the nested Space route, so the parent Space
+  // comes from the URL itself rather than route params or SpaceContext
+  // (which carries no selected Space on non-collection routes).
+  const parentSpaceName = resolveSpaceScratchpadRoute(location.pathname)?.spaceName;
+  const scratchpadQuery = useSpaceScratchpad(currentUser?.name, parentSpaceName);
+  const scratchpadSpace = scratchpadQuery.data;
   const statsFilter = scratchpadSpace ? `space == ${JSON.stringify(scratchpadSpace.name)}` : undefined;
   const { tags } = useFilteredMemoStats({
     context: "home",
@@ -167,7 +172,7 @@ const ScratchpadSidebarContent = () => {
 
   return (
     <div className={SIDEBAR_SECTION_STACK_CLASSES}>
-      <TagsSection tagCount={tags} scope="scratchpad" onSelect={() => setMobileOpen(false)} />
+      <TagsSection tagCount={tags} scope={`scratchpad:${parentSpaceName ?? ""}`} onSelect={() => setMobileOpen(false)} />
     </div>
   );
 };
@@ -428,17 +433,23 @@ const GlobalNavigation = () => {
           icon: PaperclipIcon,
           active: routeKind === "attachments",
         },
-        ...(selectedSpaceName
-          ? [
-              {
-                id: "scratchpad",
-                label: t("common.scratchpad"),
-                path: buildSpaceScratchpadPath(selectedSpaceName),
-                icon: NotebookPenIcon,
-                active: routeKind === "scratchpad",
-              },
-            ]
-          : []),
+        ...(() => {
+          // SpaceContext carries no selected Space on the nested Scratchpad
+          // route itself, so fall back to the URL to keep the entry visible
+          // and active while the page is open.
+          const scratchpadParentSpaceName = selectedSpaceName ?? resolveSpaceScratchpadRoute(location.pathname)?.spaceName;
+          return scratchpadParentSpaceName
+            ? [
+                {
+                  id: "scratchpad",
+                  label: t("common.scratchpad"),
+                  path: buildSpaceScratchpadPath(scratchpadParentSpaceName),
+                  icon: NotebookPenIcon,
+                  active: routeKind === "scratchpad",
+                },
+              ]
+            : [];
+        })(),
       ]
     : [
         {

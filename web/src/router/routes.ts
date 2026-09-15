@@ -34,6 +34,18 @@ export const SPACE_SCRATCHPAD_ROUTE_PATTERN = `${SPACE_ROUTE_PATTERN}/scratchpad
 export const buildSpaceScratchpadPath = (spaceName: string): string =>
   `/spaces/${encodeURIComponent(extractSpaceUidFromName(spaceName))}${ROUTES.SCRATCHPAD}`;
 
+/** Parent Space of a nested Scratchpad URL, if the path is one. Scratchpad is
+ * deliberately not a collection route, so this stays separate from
+ * resolveCollectionRoute: the Space stays in the URL either way. */
+export const resolveSpaceScratchpadRoute = (path: string): { spaceName: string } | undefined => {
+  const pathname = (path.split(/[?#]/, 1)[0] || "").replace(/\/+$/, "");
+  const match = matchPath({ path: SPACE_SCRATCHPAD_ROUTE_PATTERN, caseSensitive: false }, pathname);
+  const uid = match?.params.spaceUid ?? "";
+  // An encoded slash decodes into a UID that cannot round-trip through buildSpaceScratchpadPath.
+  if (!uid || uid.includes("/")) return undefined;
+  return { spaceName: `spaces/${uid}` };
+};
+
 /** Collection pages that exist both globally and beneath a Space. */
 const COLLECTION_ROUTE_PATTERNS = [ROUTES.HOME, ROUTES.EXPLORE, ROUTES.ATTACHMENTS, CALENDAR_ROUTE_PATTERN, ROUTES.MAP];
 
