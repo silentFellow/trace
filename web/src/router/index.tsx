@@ -122,6 +122,7 @@ export const routeConfig: RouteObject[] = [
                               { index: true, element: <Home /> },
                               { path: "explore", element: <Explore /> },
                               { path: "calendar/:year?/:month?/:day?", element: <Calendar /> },
+                              { path: "scratchpad", element: <Scratchpad /> },
                             ],
                           },
                           { path: "attachments", element: <Attachments /> },
@@ -133,10 +134,6 @@ export const routeConfig: RouteObject[] = [
                   },
                   { path: Routes.ATTACHMENTS, element: <Attachments /> },
                   { path: Routes.MAP, element: <MemoMap /> },
-                  {
-                    element: <MainLayout />,
-                    children: [{ path: Routes.SCRATCHPAD, element: <Scratchpad /> }],
-                  },
                   { path: Routes.INBOX, element: <Inboxes /> },
                   { path: Routes.SETTING, element: <Setting /> },
                 ],

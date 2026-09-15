@@ -46,6 +46,7 @@ describe("router configuration", () => {
     "/spaces/product/explore",
     "/spaces/product/calendar/2026/09",
     "/spaces/product/attachments",
+    "/spaces/product/scratchpad",
   ])("gates %s with authentication and Space access", (path) => {
     const types = matchRoutes(routeConfig, path)?.map(({ route }) => elementType(route));
     expect(types).toContain(RequireAuthRoute);

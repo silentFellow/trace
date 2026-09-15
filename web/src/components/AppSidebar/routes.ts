@@ -1,6 +1,6 @@
 import { matchPath } from "react-router-dom";
 import { getProfileUsername, isCalendarRoute, isMemoScopeRoute, type MemoScope, resolveMemoScope } from "@/lib/memo-views";
-import { collectionPathForLocation, ROUTES, resolveCollectionRoute } from "@/router/routes";
+import { collectionPathForLocation, ROUTES, resolveCollectionRoute, SPACE_SCRATCHPAD_ROUTE_PATTERN } from "@/router/routes";
 
 export type SidebarRouteKind =
   | MemoScope
@@ -31,7 +31,7 @@ export const getSidebarRouteKind = (path: string): SidebarRouteKind => {
   if (isCalendarRoute(normalizedPath)) return "calendar";
   if (matchPath(ROUTES.MAP, normalizedPath)) return "map";
   if (matchPath(ROUTES.ATTACHMENTS, normalizedPath)) return "attachments";
-  if (matchPath(ROUTES.SCRATCHPAD, normalizedPath)) return "scratchpad";
+  if (matchPath(SPACE_SCRATCHPAD_ROUTE_PATTERN, normalizedPath)) return "scratchpad";
   if (matchPath(ROUTES.INBOX, normalizedPath)) return "inbox";
   if (matchPath(ROUTES.SETTING, normalizedPath)) return "settings";
   if (matchPath("/memos/:uid", normalizedPath) || matchPath(`${ROUTES.SHARED_MEMO}/:token`, normalizedPath)) return "memo";

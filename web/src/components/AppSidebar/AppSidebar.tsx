@@ -50,7 +50,7 @@ import { combineCELFilters } from "@/lib/cel-filter";
 import { getMemoScopePath, getProfileUsername, type PrimaryMemoScope, resolveMemoScope } from "@/lib/memo-views";
 import { userNamePrefix } from "@/lib/resource-names";
 import { cn } from "@/lib/utils";
-import { collectionPathForLocation, ROUTES } from "@/router/routes";
+import { buildSpaceScratchpadPath, collectionPathForLocation, ROUTES } from "@/router/routes";
 import { State } from "@/types/proto/api/v1/common_pb";
 import { User_Role, UserNotification_Status } from "@/types/proto/api/v1/user_service_pb";
 import { useTranslate } from "@/utils/i18n";
@@ -373,6 +373,7 @@ const GlobalNavigation = () => {
   const currentUser = useCurrentUser();
   const { memoDetail, memoScope, setMemoScope, setMobileOpen, setQuickFindOpen } = useAppSidebar();
   const { filters } = useMemoFilterContext();
+  const { selectedSpaceName } = useSpaceContext();
   const routeKind = getSidebarRouteKind(location.pathname);
   const resolvedScope = resolveMemoScope(location.pathname, {
     currentUsername: currentUser?.username,
@@ -427,14 +428,17 @@ const GlobalNavigation = () => {
           icon: PaperclipIcon,
           active: routeKind === "attachments",
         },
-        {
-          id: "scratchpad",
-          label: t("common.scratchpad"),
-          // Scratchpad is not a collection route, so it never carries a Space into the URL.
-          path: ROUTES.SCRATCHPAD,
-          icon: NotebookPenIcon,
-          active: routeKind === "scratchpad",
-        },
+        ...(selectedSpaceName
+          ? [
+              {
+                id: "scratchpad",
+                label: t("common.scratchpad"),
+                path: buildSpaceScratchpadPath(selectedSpaceName),
+                icon: NotebookPenIcon,
+                active: routeKind === "scratchpad",
+              },
+            ]
+          : []),
       ]
     : [
         {

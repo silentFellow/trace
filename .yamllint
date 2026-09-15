@@ -1,4 +1,0 @@
----
-extends: default
-ignore: |
-  proto/gen/openapi.yaml

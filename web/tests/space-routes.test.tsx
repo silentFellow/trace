@@ -34,9 +34,14 @@ describe("Space route contract", () => {
     ["/spaces/a/explore", "explore"],
     ["/spaces/a/calendar/2026/09/06", "calendar"],
     ["/spaces/a/attachments", "attachments"],
+    ["/spaces/a/scratchpad", "scratchpad"],
     ["/spaces/a/archived", "common"],
     ["/spaces/a/unknown", "common"],
   ])("classifies %s as %s", (path, kind) => expect(getSidebarRouteKind(path)).toBe(kind));
+  it("keeps Scratchpad scoped to its parent Space", () => {
+    expect(resolveCollectionRoute("/spaces/a/scratchpad").isCollection).toBe(false);
+    expect(resolveCollectionRoute("/spaces/a/scratchpad").spaceName).toBeUndefined();
+  });
   it("does not interpret unknown space routes or encoded slashes as global collections", () => {
     expect(resolveCollectionRoute("/spaces/a/unknown").isCollection).toBe(false);
     expect(resolveCollectionRoute("/spaces/a/archived").spaceName).toBeUndefined();

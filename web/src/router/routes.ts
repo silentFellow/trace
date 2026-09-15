@@ -28,6 +28,11 @@ export type RouteKey = keyof typeof ROUTES;
 export type RoutePath = (typeof ROUTES)[RouteKey];
 
 export const SPACE_ROUTE_PATTERN = "/spaces/:spaceUid";
+export const SPACE_SCRATCHPAD_ROUTE_PATTERN = `${SPACE_ROUTE_PATTERN}/scratchpad`;
+
+/** Builds the Scratchpad URL for a selected parent Space. */
+export const buildSpaceScratchpadPath = (spaceName: string): string =>
+  `/spaces/${encodeURIComponent(extractSpaceUidFromName(spaceName))}${ROUTES.SCRATCHPAD}`;
 
 /** Collection pages that exist both globally and beneath a Space. */
 const COLLECTION_ROUTE_PATTERNS = [ROUTES.HOME, ROUTES.EXPLORE, ROUTES.ATTACHMENTS, CALENDAR_ROUTE_PATTERN, ROUTES.MAP];
