@@ -18,18 +18,26 @@ func TestSpacePayloadRoundTrip(t *testing.T) {
 	require.NoError(t, err)
 	space, err := ts.CreateSpace(ctx, &store.Space{
 		UID: "icon-space", Title: "Garden",
-		Payload: &storepb.SpacePayload{Icon: &storepb.SpacePayload_Icon{
-			Value: &storepb.SpacePayload_Icon_Emoji{Emoji: "👩🏽‍🌾"},
-		}},
+		Payload: &storepb.SpacePayload{
+			ExcludeFromTimeline: true,
+			ParentSpaceUid:      "parent-space",
+			Icon: &storepb.SpacePayload_Icon{
+				Value: &storepb.SpacePayload_Icon_Emoji{Emoji: "👩🏽‍🌾"},
+			},
+		},
 	}, owner.ID)
 	require.NoError(t, err)
 	require.Equal(t, "👩🏽‍🌾", space.Payload.GetIcon().GetEmoji())
+	require.True(t, space.Payload.GetExcludeFromTimeline())
+	require.Equal(t, "parent-space", space.Payload.GetParentSpaceUid())
 
 	for _, find := range []*store.FindSpace{{ID: &space.ID}, {MemberUserID: &owner.ID}} {
 		spaces, err := ts.ListSpaces(ctx, find)
 		require.NoError(t, err)
 		require.Len(t, spaces, 1)
 		require.Equal(t, "👩🏽‍🌾", spaces[0].Payload.GetIcon().GetEmoji())
+		require.True(t, spaces[0].Payload.GetExcludeFromTimeline())
+		require.Equal(t, "parent-space", spaces[0].Payload.GetParentSpaceUid())
 	}
 	title := "Renamed garden"
 	space, err = ts.UpdateSpace(ctx, &store.UpdateSpace{ID: space.ID, Title: &title}, owner.ID)

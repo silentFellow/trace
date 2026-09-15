@@ -13,6 +13,9 @@ message SpacePayload {
   // Fixed at creation; never toggled on an existing Space.
   bool exclude_from_timeline = 2;
 
+  // Parent actual Space UID for a private per-member Scratchpad Space.
+  string parent_space_uid = 3;
+
   message Icon {
     oneof value {
       // A Unicode emoji sequence.

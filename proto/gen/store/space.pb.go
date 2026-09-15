@@ -29,8 +29,10 @@ type SpacePayload struct {
 	// collection (Home, Calendar, Map, Explore) and cannot receive invitations.
 	// Fixed at creation; never toggled on an existing Space.
 	ExcludeFromTimeline bool `protobuf:"varint,2,opt,name=exclude_from_timeline,json=excludeFromTimeline,proto3" json:"exclude_from_timeline,omitempty"`
-	unknownFields       protoimpl.UnknownFields
-	sizeCache           protoimpl.SizeCache
+	// Parent actual Space UID for a private per-member Scratchpad Space.
+	ParentSpaceUid string `protobuf:"bytes,3,opt,name=parent_space_uid,json=parentSpaceUid,proto3" json:"parent_space_uid,omitempty"`
+	unknownFields  protoimpl.UnknownFields
+	sizeCache      protoimpl.SizeCache
 }
 
 func (x *SpacePayload) Reset() {
@@ -75,6 +77,13 @@ func (x *SpacePayload) GetExcludeFromTimeline() bool {
 		return x.ExcludeFromTimeline
 	}
 	return false
+}
+
+func (x *SpacePayload) GetParentSpaceUid() string {
+	if x != nil {
+		return x.ParentSpaceUid
+	}
+	return ""
 }
 
 type SpacePayload_Icon struct {
@@ -165,10 +174,11 @@ var File_store_space_proto protoreflect.FileDescriptor
 
 const file_store_space_proto_rawDesc = "" +
 	"\n" +
-	"\x11store/space.proto\x12\vmemos.store\"\xb9\x01\n" +
+	"\x11store/space.proto\x12\vmemos.store\"\xe3\x01\n" +
 	"\fSpacePayload\x122\n" +
 	"\x04icon\x18\x01 \x01(\v2\x1e.memos.store.SpacePayload.IconR\x04icon\x122\n" +
-	"\x15exclude_from_timeline\x18\x02 \x01(\bR\x13excludeFromTimeline\x1aA\n" +
+	"\x15exclude_from_timeline\x18\x02 \x01(\bR\x13excludeFromTimeline\x12(\n" +
+	"\x10parent_space_uid\x18\x03 \x01(\tR\x0eparentSpaceUid\x1aA\n" +
 	"\x04Icon\x12\x16\n" +
 	"\x05emoji\x18\x01 \x01(\tH\x00R\x05emoji\x12\x18\n" +
 	"\x06lucide\x18\x02 \x01(\tH\x00R\x06lucideB\a\n" +
