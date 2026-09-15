@@ -44,6 +44,7 @@ import { useAttachmentLibraryStats } from "@/hooks/useAttachmentLibrary";
 import useCurrentUser from "@/hooks/useCurrentUser";
 import { type MemoStatsContext, useFilteredMemoStats } from "@/hooks/useFilteredMemoStats";
 import useMediaQuery from "@/hooks/useMediaQuery";
+import { useSpaces } from "@/hooks/useSpaceQueries";
 import { useNotifications, useUser } from "@/hooks/useUserQueries";
 import { combineCELFilters } from "@/lib/cel-filter";
 import { getMemoScopePath, getProfileUsername, type PrimaryMemoScope, resolveMemoScope } from "@/lib/memo-views";
@@ -143,6 +144,30 @@ const CollectionSidebarContent = ({
       {/* Every collection route narrows the same way: views (yours, so signed-in only), days, tags. */}
       {currentUser && <ViewsSection />}
       <TagsSection tagCount={tags} scope={tagStateScope} onSelect={() => setMobileOpen(false)} />
+    </div>
+  );
+};
+
+/** Same tag narrowing as a regular collection's sidebar, scoped to just the caller's Scratchpad Space. */
+const ScratchpadSidebarContent = () => {
+  const currentUser = useCurrentUser();
+  const { mobileOpen, setMobileOpen } = useAppSidebar();
+  const { isInitialized: authInitialized } = useAuth();
+  const { isInitialized: instanceInitialized } = useInstance();
+  const md = useMediaQuery("md");
+  const spacesQuery = useSpaces(currentUser?.name, { includeScratchpad: true });
+  const scratchpadSpace = spacesQuery.data?.find((space) => space.isScratchpad);
+  const statsFilter = scratchpadSpace ? `space == ${JSON.stringify(scratchpadSpace.name)}` : undefined;
+  const { tags } = useFilteredMemoStats({
+    context: "home",
+    userName: currentUser?.name,
+    filter: statsFilter,
+    enabled: Boolean(scratchpadSpace) && authInitialized && instanceInitialized && (md || mobileOpen),
+  });
+
+  return (
+    <div className={SIDEBAR_SECTION_STACK_CLASSES}>
+      <TagsSection tagCount={tags} scope="scratchpad" onSelect={() => setMobileOpen(false)} />
     </div>
   );
 };
@@ -292,8 +317,7 @@ const RouteSidebarContent = () => {
   if (kind === "calendar") return <CollectionSidebarContent context="home" showStatistics={false} />;
   if (kind === "map") return <CollectionSidebarContent context="home" showStatistics={false} scopeFilter={MAP_MEMO_FILTER} />;
   if (kind === "attachments") return <AttachmentsSidebarContent />;
-  // Its tag columns are the layout; a duplicate tag list in the sidebar would be redundant.
-  if (kind === "scratchpad") return null;
+  if (kind === "scratchpad") return <ScratchpadSidebarContent />;
   if (kind === "inbox") return <InboxSidebarContent />;
   if (kind === "settings") return <SettingsSidebarContent />;
   if (kind === "memo") return <MemoDetailSidebarContent />;
