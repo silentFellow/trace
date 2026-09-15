@@ -1,0 +1,20 @@
+.export-print-root {
+  display: none;
+  background: #ffffff;
+  color: #000000;
+}
+
+@media print {
+  body > *:not(.export-print-root) {
+    display: none !important;
+  }
+
+  .export-print-root {
+    display: block;
+  }
+
+  .export-print-memo {
+    break-inside: avoid;
+    margin-bottom: 1.5rem;
+  }
+}

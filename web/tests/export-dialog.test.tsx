@@ -7,7 +7,10 @@ import { MemoSchema } from "@/types/proto/api/v1/memo_service_pb";
 
 vi.mock("@/components/Export/fetchExportMemos", () => ({ fetchExportMemos: vi.fn() }));
 vi.mock("@/hooks/useSpaceQueries", () => ({ useSpaces: () => ({ data: [] }) }));
-vi.mock("@/hooks/useUserQueries", () => ({ useTagCounts: () => ({ data: { work: 2, idea: 1 } }) }));
+vi.mock("@/hooks/useUserQueries", () => ({
+  useTagCounts: () => ({ data: { work: 2, idea: 1 } }),
+  useUsersByUsernames: () => ({ data: [] }),
+}));
 vi.mock("@/hooks/useCurrentUser", () => ({ default: () => ({ name: "users/test" }) }));
 vi.mock("@/contexts/SpaceContext", () => ({ useSpaceContext: () => ({ selectedSpaceName: "" }) }));
 vi.mock("@/components/ActivityCalendar", () => ({
@@ -25,7 +28,10 @@ vi.mock("@/components/ui/dialog", () => ({
   DialogHeader: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
   DialogTitle: ({ children }: { children: React.ReactNode }) => <h2>{children}</h2>,
 }));
-vi.mock("@/utils/i18n", () => ({ useTranslate: () => (key: string) => key }));
+vi.mock("@/utils/i18n", () => ({
+  useTranslate: () => (key: string) => key,
+  findNearestMatchedLanguage: (language: string) => language,
+}));
 
 describe("ExportDialog", () => {
   beforeEach(() => {
@@ -57,6 +63,16 @@ describe("ExportDialog", () => {
     expect(createObjectURL).toHaveBeenCalledOnce();
     expect(clickSpy).toHaveBeenCalledOnce();
     clickSpy.mockRestore();
+  });
+
+  it("renders fetched memos into the print view on PDF export", async () => {
+    vi.mocked(fetchExportMemos).mockResolvedValue({
+      memos: [create(MemoSchema, { content: "printable note" })],
+      truncated: false,
+    });
+    render(<ExportDialog open onOpenChange={() => {}} />);
+    fireEvent.click(screen.getByRole("button", { name: "export.export-pdf" }));
+    await waitFor(() => expect(screen.getByTestId("export-print-root")).toHaveTextContent("printable note"));
   });
 
   it("passes the picked range and archived flag through", async () => {

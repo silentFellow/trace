@@ -7,8 +7,10 @@ import useCurrentUser from "@/hooks/useCurrentUser";
 import { useSpaces } from "@/hooks/useSpaceQueries";
 import { useTagCounts } from "@/hooks/useUserQueries";
 import type { LocalTimestampRange } from "@/lib/calendar-utils";
+import type { Memo } from "@/types/proto/api/v1/memo_service_pb";
 import { useTranslate } from "@/utils/i18n";
 import { buildExportMarkdown } from "./buildExportMarkdown";
+import { ExportPrintView } from "./ExportPrintView";
 import { fetchExportMemos } from "./fetchExportMemos";
 
 interface Props {
@@ -56,6 +58,7 @@ export function ExportDialog({ open, onOpenChange }: Props) {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | undefined>(undefined);
   const [truncated, setTruncated] = useState(false);
+  const [printMemos, setPrintMemos] = useState<Memo[] | undefined>(undefined);
 
   const tags = useMemo(() => Object.keys(tagCounts).sort(), [tagCounts]);
 
@@ -114,6 +117,31 @@ export function ExportDialog({ open, onOpenChange }: Props) {
       setIncludeTags((prev) => (prev.includes(tag) ? prev.filter((item) => item !== tag) : [...prev, tag]));
     } else {
       setExcludeTags((prev) => (prev.includes(tag) ? prev.filter((item) => item !== tag) : [...prev, tag]));
+    }
+  };
+
+  const collectMemos = async (): Promise<Memo[] | undefined> => {
+    setBusy(true);
+    setError(undefined);
+    setTruncated(false);
+    try {
+      const { memos, truncated } = await fetchExportMemos({
+        spaceName: scope === EVERYTHING ? undefined : scope,
+        range,
+        includeTags,
+        excludeTags,
+        includeArchived,
+      });
+      if (truncated) {
+        setTruncated(true);
+        return undefined;
+      }
+      return memos;
+    } catch {
+      setError(t("export.failed"));
+      return undefined;
+    } finally {
+      setBusy(false);
     }
   };
 
@@ -237,8 +265,24 @@ export function ExportDialog({ open, onOpenChange }: Props) {
           <Button type="button" disabled={busy} onClick={handleExportMarkdown}>
             {t("export.export-markdown")}
           </Button>
+          <Button
+            type="button"
+            disabled={busy}
+            onClick={async () => {
+              const memos = await collectMemos();
+              if (!memos) return;
+              setPrintMemos(memos);
+              // jsdom has no print; browsers always have both.
+              if (typeof window.print !== "function") return;
+              if (typeof requestAnimationFrame === "function") requestAnimationFrame(() => window.print());
+              else window.print();
+            }}
+          >
+            {t("export.export-pdf")}
+          </Button>
         </DialogFooter>
       </DialogContent>
+      {printMemos && <ExportPrintView memos={printMemos} />}
     </Dialog>
   );
 }
