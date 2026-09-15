@@ -17,8 +17,10 @@ import (
 	"google.golang.org/protobuf/types/known/emptypb"
 
 	"github.com/usememos/memos/internal/clientip"
+	"github.com/usememos/memos/internal/random"
 	"github.com/usememos/memos/internal/ratelimit"
 	v1pb "github.com/usememos/memos/proto/gen/api/v1"
+	storepb "github.com/usememos/memos/proto/gen/store"
 	"github.com/usememos/memos/store"
 )
 
@@ -233,6 +235,7 @@ func (s *APIV1Service) CreateUser(ctx context.Context, request *v1pb.CreateUserR
 					return nil, convertUserWriteError(err, "failed to create first user")
 				}
 				if created {
+					s.provisionScratchpad(ctx, user.ID)
 					return convertUserFromStore(user, user), nil
 				}
 				roleToAssign = store.RoleUser
@@ -315,8 +318,23 @@ func (s *APIV1Service) CreateUser(ctx context.Context, request *v1pb.CreateUserR
 	if err != nil {
 		return nil, convertUserWriteError(err, "failed to create user")
 	}
+	s.provisionScratchpad(ctx, user.ID)
 
 	return convertUserFromStore(user, user), nil
+}
+
+// provisionScratchpad creates the caller's single, permanently
+// timeline-excluded Space. Failure is logged, not returned: a missing
+// Scratchpad degrades to "no tag board yet", not a broken signup.
+func (s *APIV1Service) provisionScratchpad(ctx context.Context, userID int32) {
+	_, err := s.Store.CreateSpace(ctx, &store.Space{
+		UID:     random.UUID(),
+		Title:   "Scratchpad",
+		Payload: &storepb.SpacePayload{ExcludeFromTimeline: true},
+	}, userID)
+	if err != nil {
+		slog.Warn("failed to provision scratchpad space", slog.Int64("user_id", int64(userID)), slog.Any("error", err))
+	}
 }
 
 func (s *APIV1Service) UpdateUser(ctx context.Context, request *v1pb.UpdateUserRequest) (*v1pb.User, error) {

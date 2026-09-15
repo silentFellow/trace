@@ -275,6 +275,9 @@ func (s *APIV1Service) CreateSpaceInvitation(ctx context.Context, request *v1pb.
 	if err := requireSpaceAdministrator(callerMembership); err != nil {
 		return nil, err
 	}
+	if space.Payload.GetExcludeFromTimeline() {
+		return nil, status.Error(codes.FailedPrecondition, "this space cannot invite members")
+	}
 	targetUsername, err := parseUsernameFromName(request.SpaceInvitation.Invitee)
 	if err != nil {
 		return nil, status.Errorf(codes.InvalidArgument, "invalid invitation invitee: %v", err)

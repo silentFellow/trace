@@ -8,6 +8,11 @@ option go_package = "gen/store";
 message SpacePayload {
   Icon icon = 1;
 
+  // If true, this Space is permanently excluded from every all-scope memo
+  // collection (Home, Calendar, Map, Explore) and cannot receive invitations.
+  // Fixed at creation; never toggled on an existing Space.
+  bool exclude_from_timeline = 2;
+
   message Icon {
     oneof value {
       // A Unicode emoji sequence.

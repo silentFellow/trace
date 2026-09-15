@@ -23,10 +23,14 @@ const (
 
 // SpacePayload stores optional Space display metadata.
 type SpacePayload struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Icon          *SpacePayload_Icon     `protobuf:"bytes,1,opt,name=icon,proto3" json:"icon,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
+	state protoimpl.MessageState `protogen:"open.v1"`
+	Icon  *SpacePayload_Icon     `protobuf:"bytes,1,opt,name=icon,proto3" json:"icon,omitempty"`
+	// If true, this Space is permanently excluded from every all-scope memo
+	// collection (Home, Calendar, Map, Explore) and cannot receive invitations.
+	// Fixed at creation; never toggled on an existing Space.
+	ExcludeFromTimeline bool `protobuf:"varint,2,opt,name=exclude_from_timeline,json=excludeFromTimeline,proto3" json:"exclude_from_timeline,omitempty"`
+	unknownFields       protoimpl.UnknownFields
+	sizeCache           protoimpl.SizeCache
 }
 
 func (x *SpacePayload) Reset() {
@@ -64,6 +68,13 @@ func (x *SpacePayload) GetIcon() *SpacePayload_Icon {
 		return x.Icon
 	}
 	return nil
+}
+
+func (x *SpacePayload) GetExcludeFromTimeline() bool {
+	if x != nil {
+		return x.ExcludeFromTimeline
+	}
+	return false
 }
 
 type SpacePayload_Icon struct {
@@ -154,9 +165,10 @@ var File_store_space_proto protoreflect.FileDescriptor
 
 const file_store_space_proto_rawDesc = "" +
 	"\n" +
-	"\x11store/space.proto\x12\vmemos.store\"\x85\x01\n" +
+	"\x11store/space.proto\x12\vmemos.store\"\xb9\x01\n" +
 	"\fSpacePayload\x122\n" +
-	"\x04icon\x18\x01 \x01(\v2\x1e.memos.store.SpacePayload.IconR\x04icon\x1aA\n" +
+	"\x04icon\x18\x01 \x01(\v2\x1e.memos.store.SpacePayload.IconR\x04icon\x122\n" +
+	"\x15exclude_from_timeline\x18\x02 \x01(\bR\x13excludeFromTimeline\x1aA\n" +
 	"\x04Icon\x12\x16\n" +
 	"\x05emoji\x18\x01 \x01(\tH\x00R\x05emoji\x12\x18\n" +
 	"\x06lucide\x18\x02 \x01(\tH\x00R\x06lucideB\a\n" +

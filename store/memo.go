@@ -157,6 +157,9 @@ type MemoAccessScope struct {
 	UserID         *int32
 	AllowPublic    bool
 	AllowProtected bool
+	// ExcludeSpaceIDs removes memos placed in these Spaces regardless of
+	// visibility or authorship, e.g. the caller's Scratchpad.
+	ExcludeSpaceIDs []int32
 }
 
 type DeleteMemo struct {

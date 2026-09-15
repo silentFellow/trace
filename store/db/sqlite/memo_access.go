@@ -41,5 +41,14 @@ func sqliteMemoAccessPredicate(access *store.MemoAccessScope, memoAlias, memberA
 		*args = append(*args, *access.UserID)
 		validState = fmt.Sprintf("(%s.`row_status` = 'NORMAL' OR (%s.`row_status` = 'ARCHIVED' AND %s.`creator_id` = ?))", memoAlias, memoAlias, memoAlias)
 	}
-	return "(" + strings.Join(clauses, " OR ") + ") AND " + validMemo + " AND " + validState
+	predicate := "(" + strings.Join(clauses, " OR ") + ") AND " + validMemo + " AND " + validState
+	if len(access.ExcludeSpaceIDs) > 0 {
+		placeholders := make([]string, len(access.ExcludeSpaceIDs))
+		for i, spaceID := range access.ExcludeSpaceIDs {
+			placeholders[i] = "?"
+			*args = append(*args, spaceID)
+		}
+		predicate += " AND (" + memoAlias + ".`space_id` IS NULL OR " + memoAlias + ".`space_id` NOT IN (" + strings.Join(placeholders, ", ") + "))"
+	}
+	return predicate
 }

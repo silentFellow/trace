@@ -88,7 +88,33 @@ func (s *APIV1Service) resolveMemoAccessScope(ctx context.Context) (*store.MemoA
 			return nil, nil, errors.Wrap(err, "failed to resolve instance access policy")
 		}
 	}
-	return newMemoAccessScope(currentUser, allowPublic), currentUser, nil
+	accessScope := newMemoAccessScope(currentUser, allowPublic)
+	if currentUser != nil {
+		excluded, err := s.timelineExcludedSpaceIDs(ctx, currentUser.ID)
+		if err != nil {
+			return nil, nil, errors.Wrap(err, "failed to resolve timeline-excluded spaces")
+		}
+		accessScope.ExcludeSpaceIDs = excluded
+	}
+	return accessScope, currentUser, nil
+}
+
+// timelineExcludedSpaceIDs returns the Space IDs the caller is a member of
+// that are flagged exclude_from_timeline, e.g. their Scratchpad. Callers
+// supply this on MemoAccessScope so every list/stats endpoint hides those
+// Spaces from all-scope memo collections without each caller remembering to.
+func (s *APIV1Service) timelineExcludedSpaceIDs(ctx context.Context, userID int32) ([]int32, error) {
+	spaces, err := s.Store.ListSpaces(ctx, &store.FindSpace{MemberUserID: &userID})
+	if err != nil {
+		return nil, err
+	}
+	var excluded []int32
+	for _, space := range spaces {
+		if space.Payload.GetExcludeFromTimeline() {
+			excluded = append(excluded, space.ID)
+		}
+	}
+	return excluded, nil
 }
 
 // resolveWritableSpaceByName resolves a space resource name and requires the
