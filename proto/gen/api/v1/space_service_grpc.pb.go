@@ -20,22 +20,23 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	SpaceService_CreateSpace_FullMethodName              = "/memos.api.v1.SpaceService/CreateSpace"
-	SpaceService_ListSpaces_FullMethodName               = "/memos.api.v1.SpaceService/ListSpaces"
-	SpaceService_GetSpace_FullMethodName                 = "/memos.api.v1.SpaceService/GetSpace"
-	SpaceService_UpdateSpace_FullMethodName              = "/memos.api.v1.SpaceService/UpdateSpace"
-	SpaceService_DeleteSpace_FullMethodName              = "/memos.api.v1.SpaceService/DeleteSpace"
-	SpaceService_CreateSpaceInvitation_FullMethodName    = "/memos.api.v1.SpaceService/CreateSpaceInvitation"
-	SpaceService_ListSpaceInvitations_FullMethodName     = "/memos.api.v1.SpaceService/ListSpaceInvitations"
-	SpaceService_ListUserSpaceInvitations_FullMethodName = "/memos.api.v1.SpaceService/ListUserSpaceInvitations"
-	SpaceService_GetSpaceInvitation_FullMethodName       = "/memos.api.v1.SpaceService/GetSpaceInvitation"
-	SpaceService_DeleteSpaceInvitation_FullMethodName    = "/memos.api.v1.SpaceService/DeleteSpaceInvitation"
-	SpaceService_AcceptSpaceInvitation_FullMethodName    = "/memos.api.v1.SpaceService/AcceptSpaceInvitation"
-	SpaceService_DeclineSpaceInvitation_FullMethodName   = "/memos.api.v1.SpaceService/DeclineSpaceInvitation"
-	SpaceService_ListSpaceMembers_FullMethodName         = "/memos.api.v1.SpaceService/ListSpaceMembers"
-	SpaceService_GetSpaceMember_FullMethodName           = "/memos.api.v1.SpaceService/GetSpaceMember"
-	SpaceService_UpdateSpaceMember_FullMethodName        = "/memos.api.v1.SpaceService/UpdateSpaceMember"
-	SpaceService_DeleteSpaceMember_FullMethodName        = "/memos.api.v1.SpaceService/DeleteSpaceMember"
+	SpaceService_CreateSpace_FullMethodName                = "/memos.api.v1.SpaceService/CreateSpace"
+	SpaceService_ListSpaces_FullMethodName                 = "/memos.api.v1.SpaceService/ListSpaces"
+	SpaceService_GetSpace_FullMethodName                   = "/memos.api.v1.SpaceService/GetSpace"
+	SpaceService_GetOrCreateSpaceScratchpad_FullMethodName = "/memos.api.v1.SpaceService/GetOrCreateSpaceScratchpad"
+	SpaceService_UpdateSpace_FullMethodName                = "/memos.api.v1.SpaceService/UpdateSpace"
+	SpaceService_DeleteSpace_FullMethodName                = "/memos.api.v1.SpaceService/DeleteSpace"
+	SpaceService_CreateSpaceInvitation_FullMethodName      = "/memos.api.v1.SpaceService/CreateSpaceInvitation"
+	SpaceService_ListSpaceInvitations_FullMethodName       = "/memos.api.v1.SpaceService/ListSpaceInvitations"
+	SpaceService_ListUserSpaceInvitations_FullMethodName   = "/memos.api.v1.SpaceService/ListUserSpaceInvitations"
+	SpaceService_GetSpaceInvitation_FullMethodName         = "/memos.api.v1.SpaceService/GetSpaceInvitation"
+	SpaceService_DeleteSpaceInvitation_FullMethodName      = "/memos.api.v1.SpaceService/DeleteSpaceInvitation"
+	SpaceService_AcceptSpaceInvitation_FullMethodName      = "/memos.api.v1.SpaceService/AcceptSpaceInvitation"
+	SpaceService_DeclineSpaceInvitation_FullMethodName     = "/memos.api.v1.SpaceService/DeclineSpaceInvitation"
+	SpaceService_ListSpaceMembers_FullMethodName           = "/memos.api.v1.SpaceService/ListSpaceMembers"
+	SpaceService_GetSpaceMember_FullMethodName             = "/memos.api.v1.SpaceService/GetSpaceMember"
+	SpaceService_UpdateSpaceMember_FullMethodName          = "/memos.api.v1.SpaceService/UpdateSpaceMember"
+	SpaceService_DeleteSpaceMember_FullMethodName          = "/memos.api.v1.SpaceService/DeleteSpaceMember"
 )
 
 // SpaceServiceClient is the client API for SpaceService service.
@@ -51,6 +52,9 @@ type SpaceServiceClient interface {
 	ListSpaces(ctx context.Context, in *ListSpacesRequest, opts ...grpc.CallOption) (*ListSpacesResponse, error)
 	// GetSpace gets a space of which the authenticated caller is a member.
 	GetSpace(ctx context.Context, in *GetSpaceRequest, opts ...grpc.CallOption) (*Space, error)
+	// GetOrCreateSpaceScratchpad returns the caller's private Scratchpad for a
+	// parent Space, creating it on the first request.
+	GetOrCreateSpaceScratchpad(ctx context.Context, in *GetOrCreateSpaceScratchpadRequest, opts ...grpc.CallOption) (*Space, error)
 	// UpdateSpace updates space metadata.
 	UpdateSpace(ctx context.Context, in *UpdateSpaceRequest, opts ...grpc.CallOption) (*Space, error)
 	// DeleteSpace permanently deletes a space and every memo currently placed
@@ -113,6 +117,16 @@ func (c *spaceServiceClient) GetSpace(ctx context.Context, in *GetSpaceRequest, 
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(Space)
 	err := c.cc.Invoke(ctx, SpaceService_GetSpace_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *spaceServiceClient) GetOrCreateSpaceScratchpad(ctx context.Context, in *GetOrCreateSpaceScratchpadRequest, opts ...grpc.CallOption) (*Space, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(Space)
+	err := c.cc.Invoke(ctx, SpaceService_GetOrCreateSpaceScratchpad_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -262,6 +276,9 @@ type SpaceServiceServer interface {
 	ListSpaces(context.Context, *ListSpacesRequest) (*ListSpacesResponse, error)
 	// GetSpace gets a space of which the authenticated caller is a member.
 	GetSpace(context.Context, *GetSpaceRequest) (*Space, error)
+	// GetOrCreateSpaceScratchpad returns the caller's private Scratchpad for a
+	// parent Space, creating it on the first request.
+	GetOrCreateSpaceScratchpad(context.Context, *GetOrCreateSpaceScratchpadRequest) (*Space, error)
 	// UpdateSpace updates space metadata.
 	UpdateSpace(context.Context, *UpdateSpaceRequest) (*Space, error)
 	// DeleteSpace permanently deletes a space and every memo currently placed
@@ -308,6 +325,9 @@ func (UnimplementedSpaceServiceServer) ListSpaces(context.Context, *ListSpacesRe
 }
 func (UnimplementedSpaceServiceServer) GetSpace(context.Context, *GetSpaceRequest) (*Space, error) {
 	return nil, status.Error(codes.Unimplemented, "method GetSpace not implemented")
+}
+func (UnimplementedSpaceServiceServer) GetOrCreateSpaceScratchpad(context.Context, *GetOrCreateSpaceScratchpadRequest) (*Space, error) {
+	return nil, status.Error(codes.Unimplemented, "method GetOrCreateSpaceScratchpad not implemented")
 }
 func (UnimplementedSpaceServiceServer) UpdateSpace(context.Context, *UpdateSpaceRequest) (*Space, error) {
 	return nil, status.Error(codes.Unimplemented, "method UpdateSpace not implemented")
@@ -419,6 +439,24 @@ func _SpaceService_GetSpace_Handler(srv interface{}, ctx context.Context, dec fu
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(SpaceServiceServer).GetSpace(ctx, req.(*GetSpaceRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _SpaceService_GetOrCreateSpaceScratchpad_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetOrCreateSpaceScratchpadRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(SpaceServiceServer).GetOrCreateSpaceScratchpad(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: SpaceService_GetOrCreateSpaceScratchpad_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(SpaceServiceServer).GetOrCreateSpaceScratchpad(ctx, req.(*GetOrCreateSpaceScratchpadRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -675,6 +713,10 @@ var SpaceService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetSpace",
 			Handler:    _SpaceService_GetSpace_Handler,
+		},
+		{
+			MethodName: "GetOrCreateSpaceScratchpad",
+			Handler:    _SpaceService_GetOrCreateSpaceScratchpad_Handler,
 		},
 		{
 			MethodName: "UpdateSpace",

@@ -176,6 +176,31 @@ func (s *APIV1Service) GetSpace(ctx context.Context, request *v1pb.GetSpaceReque
 	return convertSpaceFromStore(space), nil
 }
 
+// GetOrCreateSpaceScratchpad returns the caller's private Scratchpad for a
+// parent Space, creating it on the first request.
+func (s *APIV1Service) GetOrCreateSpaceScratchpad(ctx context.Context, request *v1pb.GetOrCreateSpaceScratchpadRequest) (*v1pb.Space, error) {
+	currentUser, err := s.requireCurrentSpaceUser(ctx)
+	if err != nil {
+		return nil, err
+	}
+	parent, _, err := s.resolveMemberSpace(ctx, request.GetParent(), currentUser)
+	if err != nil {
+		return nil, err
+	}
+	if parent.Payload.GetExcludeFromTimeline() {
+		return nil, status.Error(codes.FailedPrecondition, "a Scratchpad cannot have a child Scratchpad")
+	}
+
+	scratchpad, created, err := s.Store.GetOrCreateScratchpad(ctx, parent.UID, currentUser.ID)
+	if err != nil {
+		return nil, mapSpaceMutationError(err, "failed to provision Scratchpad")
+	}
+	if created {
+		s.SSEHub.publishSpaceChanged()
+	}
+	return convertSpaceFromStore(scratchpad), nil
+}
+
 // UpdateSpace updates Space metadata.
 func (s *APIV1Service) UpdateSpace(ctx context.Context, request *v1pb.UpdateSpaceRequest) (*v1pb.Space, error) {
 	currentUser, err := s.requireCurrentSpaceUser(ctx)
@@ -247,6 +272,40 @@ func (s *APIV1Service) DeleteSpace(ctx context.Context, request *v1pb.DeleteSpac
 	if err := requireSpaceAdministrator(membership); err != nil {
 		return nil, err
 	}
+
+	// Child Scratchpads are private Spaces owned by their respective users, so
+	// delete them with their own admin membership before deleting the parent.
+	allSpaces, err := s.Store.ListSpaces(ctx, &store.FindSpace{})
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "failed to find child Scratchpads: %v", err)
+	}
+	for _, child := range allSpaces {
+		if child.Payload.GetParentSpaceUid() != space.UID {
+			continue
+		}
+		members, err := s.Store.ListSpaceMembers(ctx, &store.FindSpaceMember{SpaceID: &child.ID})
+		if err != nil {
+			return nil, status.Errorf(codes.Internal, "failed to find Scratchpad owner: %v", err)
+		}
+		var childOwnerID int32
+		for _, childMember := range members {
+			if childMember.Role == store.SpaceMemberRoleAdmin {
+				childOwnerID = childMember.UserID
+				break
+			}
+		}
+		if childOwnerID == 0 {
+			return nil, status.Error(codes.Internal, "Scratchpad has no owner")
+		}
+		childDeleteResult, err := s.Store.DeleteSpace(ctx, &store.DeleteSpace{ID: child.ID, ActorUserID: childOwnerID})
+		if err != nil {
+			return nil, mapSpaceMutationError(err, "failed to delete child Scratchpad")
+		}
+		if err := s.cleanupDeletedAttachmentStorage(ctx, childDeleteResult.Attachments); err != nil {
+			return nil, status.Errorf(codes.Internal, "Scratchpad was deleted but attachment storage cleanup failed: %v", err)
+		}
+	}
+
 	deleteResult, err := s.Store.DeleteSpace(ctx, &store.DeleteSpace{ID: space.ID, ActorUserID: currentUser.ID})
 	if err != nil {
 		return nil, mapSpaceMutationError(err, "failed to delete space")

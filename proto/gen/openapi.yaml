@@ -1831,6 +1831,40 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/Status'
+    /api/v1/spaces/{space}/scratchpad:ensure:
+        post:
+            tags:
+                - SpaceService
+            description: |-
+                GetOrCreateSpaceScratchpad returns the caller's private Scratchpad for a
+                 parent Space, creating it on the first request.
+            operationId: SpaceService_GetOrCreateSpaceScratchpad
+            parameters:
+                - name: space
+                  in: path
+                  description: The space id.
+                  required: true
+                  schema:
+                    type: string
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/GetOrCreateSpaceScratchpadRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Space'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
     /api/v1/users:
         get:
             tags:
@@ -3309,6 +3343,14 @@ components:
                     allOf:
                         - $ref: '#/components/schemas/User'
                     description: The authenticated user's information.
+        GetOrCreateSpaceScratchpadRequest:
+            required:
+                - parent
+            type: object
+            properties:
+                parent:
+                    type: string
+                    description: Required. The parent actual Space resource name.
         GetUserWebhookSigningSecretResponse:
             type: object
             properties:

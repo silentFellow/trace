@@ -41,6 +41,9 @@ const (
 	SpaceServiceListSpacesProcedure = "/memos.api.v1.SpaceService/ListSpaces"
 	// SpaceServiceGetSpaceProcedure is the fully-qualified name of the SpaceService's GetSpace RPC.
 	SpaceServiceGetSpaceProcedure = "/memos.api.v1.SpaceService/GetSpace"
+	// SpaceServiceGetOrCreateSpaceScratchpadProcedure is the fully-qualified name of the SpaceService's
+	// GetOrCreateSpaceScratchpad RPC.
+	SpaceServiceGetOrCreateSpaceScratchpadProcedure = "/memos.api.v1.SpaceService/GetOrCreateSpaceScratchpad"
 	// SpaceServiceUpdateSpaceProcedure is the fully-qualified name of the SpaceService's UpdateSpace
 	// RPC.
 	SpaceServiceUpdateSpaceProcedure = "/memos.api.v1.SpaceService/UpdateSpace"
@@ -91,6 +94,9 @@ type SpaceServiceClient interface {
 	ListSpaces(context.Context, *connect.Request[v1.ListSpacesRequest]) (*connect.Response[v1.ListSpacesResponse], error)
 	// GetSpace gets a space of which the authenticated caller is a member.
 	GetSpace(context.Context, *connect.Request[v1.GetSpaceRequest]) (*connect.Response[v1.Space], error)
+	// GetOrCreateSpaceScratchpad returns the caller's private Scratchpad for a
+	// parent Space, creating it on the first request.
+	GetOrCreateSpaceScratchpad(context.Context, *connect.Request[v1.GetOrCreateSpaceScratchpadRequest]) (*connect.Response[v1.Space], error)
 	// UpdateSpace updates space metadata.
 	UpdateSpace(context.Context, *connect.Request[v1.UpdateSpaceRequest]) (*connect.Response[v1.Space], error)
 	// DeleteSpace permanently deletes a space and every memo currently placed
@@ -148,6 +154,12 @@ func NewSpaceServiceClient(httpClient connect.HTTPClient, baseURL string, opts .
 			httpClient,
 			baseURL+SpaceServiceGetSpaceProcedure,
 			connect.WithSchema(spaceServiceMethods.ByName("GetSpace")),
+			connect.WithClientOptions(opts...),
+		),
+		getOrCreateSpaceScratchpad: connect.NewClient[v1.GetOrCreateSpaceScratchpadRequest, v1.Space](
+			httpClient,
+			baseURL+SpaceServiceGetOrCreateSpaceScratchpadProcedure,
+			connect.WithSchema(spaceServiceMethods.ByName("GetOrCreateSpaceScratchpad")),
 			connect.WithClientOptions(opts...),
 		),
 		updateSpace: connect.NewClient[v1.UpdateSpaceRequest, v1.Space](
@@ -233,22 +245,23 @@ func NewSpaceServiceClient(httpClient connect.HTTPClient, baseURL string, opts .
 
 // spaceServiceClient implements SpaceServiceClient.
 type spaceServiceClient struct {
-	createSpace              *connect.Client[v1.CreateSpaceRequest, v1.Space]
-	listSpaces               *connect.Client[v1.ListSpacesRequest, v1.ListSpacesResponse]
-	getSpace                 *connect.Client[v1.GetSpaceRequest, v1.Space]
-	updateSpace              *connect.Client[v1.UpdateSpaceRequest, v1.Space]
-	deleteSpace              *connect.Client[v1.DeleteSpaceRequest, emptypb.Empty]
-	createSpaceInvitation    *connect.Client[v1.CreateSpaceInvitationRequest, v1.SpaceInvitation]
-	listSpaceInvitations     *connect.Client[v1.ListSpaceInvitationsRequest, v1.ListSpaceInvitationsResponse]
-	listUserSpaceInvitations *connect.Client[v1.ListUserSpaceInvitationsRequest, v1.ListUserSpaceInvitationsResponse]
-	getSpaceInvitation       *connect.Client[v1.GetSpaceInvitationRequest, v1.SpaceInvitation]
-	deleteSpaceInvitation    *connect.Client[v1.DeleteSpaceInvitationRequest, emptypb.Empty]
-	acceptSpaceInvitation    *connect.Client[v1.AcceptSpaceInvitationRequest, v1.SpaceMember]
-	declineSpaceInvitation   *connect.Client[v1.DeclineSpaceInvitationRequest, emptypb.Empty]
-	listSpaceMembers         *connect.Client[v1.ListSpaceMembersRequest, v1.ListSpaceMembersResponse]
-	getSpaceMember           *connect.Client[v1.GetSpaceMemberRequest, v1.SpaceMember]
-	updateSpaceMember        *connect.Client[v1.UpdateSpaceMemberRequest, v1.SpaceMember]
-	deleteSpaceMember        *connect.Client[v1.DeleteSpaceMemberRequest, emptypb.Empty]
+	createSpace                *connect.Client[v1.CreateSpaceRequest, v1.Space]
+	listSpaces                 *connect.Client[v1.ListSpacesRequest, v1.ListSpacesResponse]
+	getSpace                   *connect.Client[v1.GetSpaceRequest, v1.Space]
+	getOrCreateSpaceScratchpad *connect.Client[v1.GetOrCreateSpaceScratchpadRequest, v1.Space]
+	updateSpace                *connect.Client[v1.UpdateSpaceRequest, v1.Space]
+	deleteSpace                *connect.Client[v1.DeleteSpaceRequest, emptypb.Empty]
+	createSpaceInvitation      *connect.Client[v1.CreateSpaceInvitationRequest, v1.SpaceInvitation]
+	listSpaceInvitations       *connect.Client[v1.ListSpaceInvitationsRequest, v1.ListSpaceInvitationsResponse]
+	listUserSpaceInvitations   *connect.Client[v1.ListUserSpaceInvitationsRequest, v1.ListUserSpaceInvitationsResponse]
+	getSpaceInvitation         *connect.Client[v1.GetSpaceInvitationRequest, v1.SpaceInvitation]
+	deleteSpaceInvitation      *connect.Client[v1.DeleteSpaceInvitationRequest, emptypb.Empty]
+	acceptSpaceInvitation      *connect.Client[v1.AcceptSpaceInvitationRequest, v1.SpaceMember]
+	declineSpaceInvitation     *connect.Client[v1.DeclineSpaceInvitationRequest, emptypb.Empty]
+	listSpaceMembers           *connect.Client[v1.ListSpaceMembersRequest, v1.ListSpaceMembersResponse]
+	getSpaceMember             *connect.Client[v1.GetSpaceMemberRequest, v1.SpaceMember]
+	updateSpaceMember          *connect.Client[v1.UpdateSpaceMemberRequest, v1.SpaceMember]
+	deleteSpaceMember          *connect.Client[v1.DeleteSpaceMemberRequest, emptypb.Empty]
 }
 
 // CreateSpace calls memos.api.v1.SpaceService.CreateSpace.
@@ -264,6 +277,11 @@ func (c *spaceServiceClient) ListSpaces(ctx context.Context, req *connect.Reques
 // GetSpace calls memos.api.v1.SpaceService.GetSpace.
 func (c *spaceServiceClient) GetSpace(ctx context.Context, req *connect.Request[v1.GetSpaceRequest]) (*connect.Response[v1.Space], error) {
 	return c.getSpace.CallUnary(ctx, req)
+}
+
+// GetOrCreateSpaceScratchpad calls memos.api.v1.SpaceService.GetOrCreateSpaceScratchpad.
+func (c *spaceServiceClient) GetOrCreateSpaceScratchpad(ctx context.Context, req *connect.Request[v1.GetOrCreateSpaceScratchpadRequest]) (*connect.Response[v1.Space], error) {
+	return c.getOrCreateSpaceScratchpad.CallUnary(ctx, req)
 }
 
 // UpdateSpace calls memos.api.v1.SpaceService.UpdateSpace.
@@ -340,6 +358,9 @@ type SpaceServiceHandler interface {
 	ListSpaces(context.Context, *connect.Request[v1.ListSpacesRequest]) (*connect.Response[v1.ListSpacesResponse], error)
 	// GetSpace gets a space of which the authenticated caller is a member.
 	GetSpace(context.Context, *connect.Request[v1.GetSpaceRequest]) (*connect.Response[v1.Space], error)
+	// GetOrCreateSpaceScratchpad returns the caller's private Scratchpad for a
+	// parent Space, creating it on the first request.
+	GetOrCreateSpaceScratchpad(context.Context, *connect.Request[v1.GetOrCreateSpaceScratchpadRequest]) (*connect.Response[v1.Space], error)
 	// UpdateSpace updates space metadata.
 	UpdateSpace(context.Context, *connect.Request[v1.UpdateSpaceRequest]) (*connect.Response[v1.Space], error)
 	// DeleteSpace permanently deletes a space and every memo currently placed
@@ -393,6 +414,12 @@ func NewSpaceServiceHandler(svc SpaceServiceHandler, opts ...connect.HandlerOpti
 		SpaceServiceGetSpaceProcedure,
 		svc.GetSpace,
 		connect.WithSchema(spaceServiceMethods.ByName("GetSpace")),
+		connect.WithHandlerOptions(opts...),
+	)
+	spaceServiceGetOrCreateSpaceScratchpadHandler := connect.NewUnaryHandler(
+		SpaceServiceGetOrCreateSpaceScratchpadProcedure,
+		svc.GetOrCreateSpaceScratchpad,
+		connect.WithSchema(spaceServiceMethods.ByName("GetOrCreateSpaceScratchpad")),
 		connect.WithHandlerOptions(opts...),
 	)
 	spaceServiceUpdateSpaceHandler := connect.NewUnaryHandler(
@@ -481,6 +508,8 @@ func NewSpaceServiceHandler(svc SpaceServiceHandler, opts ...connect.HandlerOpti
 			spaceServiceListSpacesHandler.ServeHTTP(w, r)
 		case SpaceServiceGetSpaceProcedure:
 			spaceServiceGetSpaceHandler.ServeHTTP(w, r)
+		case SpaceServiceGetOrCreateSpaceScratchpadProcedure:
+			spaceServiceGetOrCreateSpaceScratchpadHandler.ServeHTTP(w, r)
 		case SpaceServiceUpdateSpaceProcedure:
 			spaceServiceUpdateSpaceHandler.ServeHTTP(w, r)
 		case SpaceServiceDeleteSpaceProcedure:
@@ -526,6 +555,10 @@ func (UnimplementedSpaceServiceHandler) ListSpaces(context.Context, *connect.Req
 
 func (UnimplementedSpaceServiceHandler) GetSpace(context.Context, *connect.Request[v1.GetSpaceRequest]) (*connect.Response[v1.Space], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("memos.api.v1.SpaceService.GetSpace is not implemented"))
+}
+
+func (UnimplementedSpaceServiceHandler) GetOrCreateSpaceScratchpad(context.Context, *connect.Request[v1.GetOrCreateSpaceScratchpadRequest]) (*connect.Response[v1.Space], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("memos.api.v1.SpaceService.GetOrCreateSpaceScratchpad is not implemented"))
 }
 
 func (UnimplementedSpaceServiceHandler) UpdateSpace(context.Context, *connect.Request[v1.UpdateSpaceRequest]) (*connect.Response[v1.Space], error) {

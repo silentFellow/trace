@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"github.com/usememos/memos/internal/identifier"
+	"github.com/usememos/memos/internal/random"
 	storepb "github.com/usememos/memos/proto/gen/store"
 )
 
@@ -188,6 +189,36 @@ func (s *Store) CreateSpace(ctx context.Context, create *Space, creatorID int32)
 		return nil, err
 	}
 	return s.driver.CreateSpace(ctx, create, creatorID)
+}
+
+// GetOrCreateScratchpad returns the caller's private Scratchpad associated with
+// a parent Space, creating it exactly once across concurrent first opens.
+func (s *Store) GetOrCreateScratchpad(ctx context.Context, parentUID string, userID int32) (*Space, bool, error) {
+	s.scratchpadMu.Lock()
+	defer s.scratchpadMu.Unlock()
+
+	spaces, err := s.ListSpaces(ctx, &FindSpace{MemberUserID: &userID})
+	if err != nil {
+		return nil, false, err
+	}
+	for _, space := range spaces {
+		if space.Payload.GetExcludeFromTimeline() && space.Payload.GetParentSpaceUid() == parentUID {
+			return space, false, nil
+		}
+	}
+
+	created, err := s.CreateSpace(ctx, &Space{
+		UID:   random.UUID(),
+		Title: "Scratchpad",
+		Payload: &storepb.SpacePayload{
+			ExcludeFromTimeline: true,
+			ParentSpaceUid:      parentUID,
+		},
+	}, userID)
+	if err != nil {
+		return nil, false, err
+	}
+	return created, true, nil
 }
 
 // ListSpaces returns spaces matching find.

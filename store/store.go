@@ -16,6 +16,7 @@ type Store struct {
 	driver  Driver
 
 	userCreateMu   sync.Mutex
+	scratchpadMu   sync.Mutex
 	authConfigMu   sync.Mutex
 	refreshTokenMu sync.Mutex
 	patMu          sync.Mutex
