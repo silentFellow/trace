@@ -64,6 +64,10 @@ const FILTER_CONFIGS: Record<FilterFactor, FilterConfig> = {
     icon: BookmarkIcon,
     getLabel: (value) => value,
   },
+  untagged: {
+    icon: HashIcon,
+    getLabel: (_, t) => t("common.untagged"),
+  },
   "property.hasLink": {
     icon: LinkIcon,
     getLabel: (_, t) => t("memo.filters.has-link"),

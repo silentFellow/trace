@@ -101,3 +101,37 @@ describe("TagsSection", () => {
     expect(count).toHaveClass(...SIDEBAR_ROW_COUNT_RAIL_CLASSES.split(" "));
   });
 });
+
+describe("TagsSection untagged", () => {
+  const renderSection = (props?: { tagCount?: Record<string, number>; untaggedCount?: number }) =>
+    render(
+      <MemoryRouter>
+        <MemoFilterProvider>
+          <TagsSection tagCount={props?.tagCount ?? {}} untaggedCount={props?.untaggedCount} scope="scratchpad" />
+        </MemoFilterProvider>
+      </MemoryRouter>,
+    );
+
+  it("shows an Untagged row with its count", () => {
+    renderSection({ tagCount: { a: 2 }, untaggedCount: 3 });
+    const row = screen.getByRole("button", { name: "#common.untagged, setting.tags.used-count" });
+    expect(row).toHaveTextContent("3");
+    expect(row).not.toHaveAttribute("aria-pressed");
+  });
+
+  it("hides the row without an untagged count", () => {
+    renderSection({ tagCount: { a: 2 } });
+    expect(screen.queryByRole("button", { name: "#common.untagged, setting.tags.used-count" })).not.toBeInTheDocument();
+  });
+
+  it("toggles the untagged filter mutually exclusively with tags", () => {
+    renderSection({ tagCount: { a: 2 }, untaggedCount: 3 });
+    const row = screen.getByRole("button", { name: "#common.untagged, setting.tags.used-count" });
+    fireEvent.click(row);
+    expect(row).toHaveAttribute("aria-pressed", "true");
+    fireEvent.click(screen.getByRole("button", { name: "#a, setting.tags.used-count" }));
+    expect(row).not.toHaveAttribute("aria-pressed");
+    fireEvent.click(row);
+    expect(row).toHaveAttribute("aria-pressed", "true");
+  });
+});

@@ -26,6 +26,7 @@ import SidebarSection, { SIDEBAR_SECTION_ACTION_ICON_CLASSES } from "./SidebarSe
 
 interface Props {
   tagCount: Record<string, number>;
+  untaggedCount?: number;
   onSelect?: () => void;
   /** Whose tags these are; keeps tree expansion state from bleeding between users and views. */
   scope: string;
@@ -78,15 +79,16 @@ const FlatTagRow = ({ tag, amount, active, ariaLabel, onClick }: FlatTagRowProps
   );
 };
 
-const TagsSection = ({ tagCount, onSelect, scope }: Props) => {
+const TagsSection = ({ tagCount, untaggedCount, onSelect, scope }: Props) => {
   const t = useTranslate();
   const { getFiltersByFactor, addFilter, removeFilter } = useMemoFilterContext();
   const [treeMode, setTreeMode] = useLocalStorage<boolean>("tag-view-as-tree", false);
   const activeTags = new Set(getFiltersByFactor("tagSearch").map((filter) => filter.value));
   const activeTag = activeTags.values().next().value as string | undefined;
+  const untaggedActive = getFiltersByFactor("untagged").length > 0;
   const tags = useMemo(() => Object.entries(tagCount).sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0])), [tagCount]);
 
-  if (tags.length === 0) {
+  if (tags.length === 0 && (untaggedCount ?? 0) === 0) {
     return null;
   }
 
@@ -95,11 +97,33 @@ const TagsSection = ({ tagCount, onSelect, scope }: Props) => {
     if (active) {
       removeFilter((filter) => filter.factor === "tagSearch" && filter.value === tag);
     } else {
-      removeFilter((filter) => filter.factor === "tagSearch");
+      removeFilter((filter) => filter.factor === "tagSearch" || filter.factor === "untagged");
       addFilter({ factor: "tagSearch", value: tag });
     }
     onSelect?.();
   };
+
+  const handleUntaggedClick = () => {
+    if (untaggedActive) {
+      removeFilter((filter) => filter.factor === "untagged");
+    } else {
+      removeFilter((filter) => filter.factor === "tagSearch" || filter.factor === "untagged");
+      addFilter({ factor: "untagged", value: "untagged" });
+    }
+    onSelect?.();
+  };
+
+  const untaggedRow =
+    (untaggedCount ?? 0) > 0 ? (
+      <FlatTagRow
+        key="untagged"
+        tag={t("common.untagged")}
+        amount={untaggedCount ?? 0}
+        active={untaggedActive}
+        ariaLabel={tagRowAriaLabel(t, t("common.untagged"), untaggedCount ?? 0)}
+        onClick={handleUntaggedClick}
+      />
+    ) : null;
 
   return (
     <SidebarSection
@@ -135,9 +159,13 @@ const TagsSection = ({ tagCount, onSelect, scope }: Props) => {
       }
     >
       {treeMode ? (
-        <TagTree key={scope} tagAmounts={tags} activeTag={activeTag} scope={scope} onTagClick={handleTagClick} />
+        <>
+          {untaggedRow}
+          <TagTree key={scope} tagAmounts={tags} activeTag={activeTag} scope={scope} onTagClick={handleTagClick} />
+        </>
       ) : (
         <>
+          {untaggedRow}
           {tags.map(([tag, amount]) => (
             <FlatTagRow
               key={tag}

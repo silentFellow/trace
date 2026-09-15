@@ -134,6 +134,7 @@ export const routeConfig: RouteObject[] = [
                   },
                   { path: Routes.ATTACHMENTS, element: <Attachments /> },
                   { path: Routes.MAP, element: <MemoMap /> },
+                  { path: Routes.SCRATCHPAD, element: <Scratchpad /> },
                   { path: Routes.INBOX, element: <Inboxes /> },
                   { path: Routes.SETTING, element: <Setting /> },
                 ],

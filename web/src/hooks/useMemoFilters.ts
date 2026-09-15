@@ -60,6 +60,8 @@ export const buildMemoFilter = ({
       conditions.push(filter.value);
     } else if (filter.factor === "tagSearch") {
       conditions.push(`tag in [${escapeFilterValue(filter.value)}]`);
+    } else if (filter.factor === "untagged") {
+      conditions.push(`size(tags) == 0`);
     } else if (filter.factor === "pinned") {
       if (includePinned) {
         conditions.push(`pinned`);

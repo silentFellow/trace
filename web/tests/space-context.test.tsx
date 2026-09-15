@@ -49,4 +49,9 @@ describe("SpaceProvider route scope", () => {
     setup("/");
     expect(screen.getByTestId("selected-space").textContent).toBe("");
   });
+
+  it("selects no Space on the global scratchpad view", () => {
+    setup("/scratchpad");
+    expect(screen.getByTestId("selected-space").textContent).toBe("");
+  });
 });

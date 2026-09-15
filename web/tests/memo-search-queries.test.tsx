@@ -61,6 +61,10 @@ describe("memo search requests", () => {
     expect(listMemos).toHaveBeenCalledTimes(2);
   });
 
+  it("maps the untagged factor to an empty-tags predicate", () => {
+    expect(buildMemoFilter({ filters: [{ factor: "untagged", value: "untagged" }], includePinned: true })).toContain("size(tags) == 0");
+  });
+
   it("retains the existing single retry for transient failures", async () => {
     listMemos.mockRejectedValueOnce(new ConnectError("offline", Code.Unavailable)).mockResolvedValue({ memos: [], nextPageToken: "" });
     const { result } = renderHook(() => useInfiniteMemos({ filter: "pinned" }), { wrapper: createWrapper() });

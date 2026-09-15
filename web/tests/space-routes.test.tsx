@@ -35,6 +35,7 @@ describe("Space route contract", () => {
     ["/spaces/a/calendar/2026/09/06", "calendar"],
     ["/spaces/a/attachments", "attachments"],
     ["/spaces/a/scratchpad", "scratchpad"],
+    ["/scratchpad", "scratchpad"],
     ["/spaces/a/archived", "common"],
     ["/spaces/a/unknown", "common"],
   ])("classifies %s as %s", (path, kind) => expect(getSidebarRouteKind(path)).toBe(kind));

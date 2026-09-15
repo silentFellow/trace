@@ -23,7 +23,7 @@ import {
   Trash2Icon,
   UserRoundIcon,
 } from "lucide-react";
-import { type ReactNode, useEffect } from "react";
+import { type ReactNode, useEffect, useMemo } from "react";
 import { Link, matchPath, useLocation, useNavigate } from "react-router-dom";
 import { MAP_MEMO_FILTER } from "@/components/MapView/useMapMemos";
 import { MemoDetailSidebar } from "@/components/MemoDetailSidebar";
@@ -44,8 +44,8 @@ import { useAttachmentLibraryStats } from "@/hooks/useAttachmentLibrary";
 import useCurrentUser from "@/hooks/useCurrentUser";
 import { type MemoStatsContext, useFilteredMemoStats } from "@/hooks/useFilteredMemoStats";
 import useMediaQuery from "@/hooks/useMediaQuery";
-import { useSpaceScratchpad } from "@/hooks/useSpaceQueries";
-import { useNotifications, useUser } from "@/hooks/useUserQueries";
+import { usePersonalScratchpad, useSpaceScratchpad, useSpaces } from "@/hooks/useSpaceQueries";
+import { useNotifications, useUser, useUserStats } from "@/hooks/useUserQueries";
 import { combineCELFilters } from "@/lib/cel-filter";
 import { getMemoScopePath, getProfileUsername, type PrimaryMemoScope, resolveMemoScope } from "@/lib/memo-views";
 import { userNamePrefix } from "@/lib/resource-names";
@@ -148,7 +148,7 @@ const CollectionSidebarContent = ({
   );
 };
 
-/** Same tag narrowing as a regular collection's sidebar, scoped to just the caller's Scratchpad Space. */
+/** Same tag narrowing as a regular collection's sidebar, scoped to the Scratchpad(s) in view. */
 const ScratchpadSidebarContent = () => {
   const currentUser = useCurrentUser();
   const { mobileOpen, setMobileOpen } = useAppSidebar();
@@ -157,22 +157,41 @@ const ScratchpadSidebarContent = () => {
   const md = useMediaQuery("md");
   const location = useLocation();
   // The sidebar lives outside the nested Space route, so the parent Space
-  // comes from the URL itself rather than route params or SpaceContext
-  // (which carries no selected Space on non-collection routes).
+  // comes from the URL itself rather than route params. Absent on the global
+  // view, which aggregates every Scratchpad instead.
   const parentSpaceName = resolveSpaceScratchpadRoute(location.pathname)?.spaceName;
-  const scratchpadQuery = useSpaceScratchpad(currentUser?.name, parentSpaceName);
-  const scratchpadSpace = scratchpadQuery.data;
-  const statsFilter = scratchpadSpace ? `space == ${JSON.stringify(scratchpadSpace.name)}` : undefined;
+  const childQuery = useSpaceScratchpad(currentUser?.name, parentSpaceName);
+  const spacesQuery = useSpaces(currentUser?.name, { includeScratchpad: true });
+  const personalQuery = usePersonalScratchpad(currentUser?.name, { enabled: parentSpaceName === undefined });
+  const scopeNames = useMemo(() => {
+    if (parentSpaceName) return childQuery.data ? [childQuery.data.name] : [];
+    const byName = new Map(
+      (spacesQuery.data ?? []).filter((space) => space.isScratchpad).map((space) => [space.name, space.name] as const),
+    );
+    if (personalQuery.data) byName.set(personalQuery.data.name, personalQuery.data.name);
+    return [...byName.values()];
+  }, [parentSpaceName, childQuery.data, spacesQuery.data, personalQuery.data]);
+  const statsFilter = scopeNames.length > 0 ? scopeNames.map((name) => `(space == ${JSON.stringify(name)})`).join(" || ") : undefined;
+  const sidebarEnabled = scopeNames.length > 0 && authInitialized && instanceInitialized && (md || mobileOpen);
   const { tags } = useFilteredMemoStats({
     context: "home",
     userName: currentUser?.name,
     filter: statsFilter,
-    enabled: Boolean(scratchpadSpace) && authInitialized && instanceInitialized && (md || mobileOpen),
+    enabled: sidebarEnabled,
+  });
+  const untaggedQuery = useUserStats(currentUser?.name, {
+    filter: statsFilter ? combineCELFilters(statsFilter, "size(tags) == 0") : undefined,
+    enabled: sidebarEnabled,
   });
 
   return (
     <div className={SIDEBAR_SECTION_STACK_CLASSES}>
-      <TagsSection tagCount={tags} scope={`scratchpad:${parentSpaceName ?? ""}`} onSelect={() => setMobileOpen(false)} />
+      <TagsSection
+        tagCount={tags}
+        untaggedCount={untaggedQuery.data?.totalMemoCount}
+        scope={`scratchpad:${parentSpaceName ?? "global"}`}
+        onSelect={() => setMobileOpen(false)}
+      />
     </div>
   );
 };
@@ -433,17 +452,13 @@ const GlobalNavigation = () => {
           icon: PaperclipIcon,
           active: routeKind === "attachments",
         },
-        ...(selectedSpaceName
-          ? [
-              {
-                id: "scratchpad",
-                label: t("common.scratchpad"),
-                path: buildSpaceScratchpadPath(selectedSpaceName),
-                icon: NotebookPenIcon,
-                active: routeKind === "scratchpad",
-              },
-            ]
-          : []),
+        {
+          id: "scratchpad",
+          label: t("common.scratchpad"),
+          path: selectedSpaceName ? buildSpaceScratchpadPath(selectedSpaceName) : ROUTES.SCRATCHPAD,
+          icon: NotebookPenIcon,
+          active: routeKind === "scratchpad",
+        },
       ]
     : [
         {

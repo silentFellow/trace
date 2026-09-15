@@ -58,6 +58,7 @@ export const spaceKeys = {
   list: (viewerName: string) => [...spaceKeys.lists(), viewerName] as const,
   space: (viewerName: string, spaceName: string) => [...spaceKeys.all, "space", viewerName, spaceName] as const,
   scratchpad: (viewerName: string, parentSpaceName: string) => [...spaceKeys.all, "scratchpad", viewerName, parentSpaceName] as const,
+  personalScratchpad: (viewerName: string) => [...spaceKeys.all, "personal-scratchpad", viewerName] as const,
   members: (viewerName: string, spaceName: string) => [...spaceKeys.space(viewerName, spaceName), "members"] as const,
   spaceInvitations: (viewerName: string, spaceName: string) => [...spaceKeys.space(viewerName, spaceName), "invitations"] as const,
   userInvitations: (viewerName: string) => [...spaceKeys.all, "user-invitations", viewerName] as const,
@@ -141,6 +142,15 @@ export function useSpaceScratchpad(viewerName: string | undefined, parentSpaceNa
     queryKey: spaceKeys.scratchpad(viewerName ?? "", parentSpaceName ?? ""),
     queryFn: () => spaceServiceClient.getOrCreateSpaceScratchpad({ parent: parentSpaceName ?? "" }),
     enabled: queryEnabled(viewerName, parentSpaceName, options),
+    retry: (count, error) => !hasConnectCode(error, Code.NotFound, Code.PermissionDenied) && count < 2,
+  });
+}
+
+export function usePersonalScratchpad(viewerName: string | undefined, options?: SpaceQueryOptions) {
+  return useQuery<Space, ConnectError>({
+    queryKey: spaceKeys.personalScratchpad(viewerName ?? ""),
+    queryFn: () => spaceServiceClient.getOrCreatePersonalScratchpad({}),
+    enabled: Boolean(viewerName) && (options?.enabled ?? true),
     retry: (count, error) => !hasConnectCode(error, Code.NotFound, Code.PermissionDenied) && count < 2,
   });
 }

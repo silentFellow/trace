@@ -3,12 +3,13 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { renderHook, waitFor } from "@testing-library/react";
 import type { ReactNode } from "react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { spaceKeys, useSpaceScratchpad } from "@/hooks/useSpaceQueries";
+import { spaceKeys, usePersonalScratchpad, useSpaceScratchpad } from "@/hooks/useSpaceQueries";
 import { buildSpaceScratchpadPath, resolveSpaceScratchpadRoute } from "@/router/routes";
 import { SpaceSchema } from "@/types/proto/api/v1/space_service_pb";
 
 const clients = vi.hoisted(() => ({
   getOrCreateSpaceScratchpad: vi.fn(),
+  getOrCreatePersonalScratchpad: vi.fn(),
 }));
 
 vi.mock("@/connect", () => ({
@@ -75,5 +76,34 @@ describe("useSpaceScratchpad", () => {
 
     await waitFor(() => expect(result.current.fetchStatus).toBe("idle"));
     expect(clients.getOrCreateSpaceScratchpad).not.toHaveBeenCalled();
+  });
+});
+
+describe("usePersonalScratchpad", () => {
+  beforeEach(() => {
+    clients.getOrCreatePersonalScratchpad.mockReset();
+  });
+
+  it("ensures the personal scratchpad with viewer-scoped keys", async () => {
+    const personal = create(SpaceSchema, { name: "spaces/personal", title: "Scratchpad", isScratchpad: true });
+    clients.getOrCreatePersonalScratchpad.mockResolvedValue(personal);
+    const client = createQueryClient();
+    const view = renderHook(({ user }) => usePersonalScratchpad(user), {
+      initialProps: { user: VIEWER },
+      wrapper: createWrapper(client),
+    });
+
+    await waitFor(() => expect(view.result.current.isSuccess).toBe(true));
+    expect(clients.getOrCreatePersonalScratchpad).toHaveBeenCalledWith({});
+    expect(view.result.current.data?.name).toBe("spaces/personal");
+    expect(spaceKeys.personalScratchpad(VIEWER)).not.toEqual(spaceKeys.personalScratchpad(OTHER_VIEWER));
+  });
+
+  it("stays idle without a viewer", async () => {
+    const client = createQueryClient();
+    const { result } = renderHook(() => usePersonalScratchpad(undefined), { wrapper: createWrapper(client) });
+
+    await waitFor(() => expect(result.current.fetchStatus).toBe("idle"));
+    expect(clients.getOrCreatePersonalScratchpad).not.toHaveBeenCalled();
   });
 });

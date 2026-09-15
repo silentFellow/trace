@@ -9,6 +9,7 @@ export type FilterFactor =
   | "celSearch"
   | "displayTime"
   | "pinned"
+  | "untagged"
   | "property.hasLink"
   | "property.hasTaskList"
   | "property.hasCode"
