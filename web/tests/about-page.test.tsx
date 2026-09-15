@@ -48,7 +48,7 @@ describe("<About>", () => {
   it("renders the identity hero with linked version, commit, and license chips", () => {
     renderAbout();
 
-    expect(screen.getByRole("heading", { name: "Memos" })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Trace" })).toBeInTheDocument();
     expect(screen.getByText(/Capture first/i)).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "v0.25.0" })).toHaveAttribute("href", "https://github.com/usememos/memos/releases/tag/v0.25.0");
     expect(screen.getByRole("link", { name: "0123456" })).toHaveAttribute(
