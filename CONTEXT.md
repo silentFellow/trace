@@ -57,5 +57,5 @@ The signed-in user's memos in the archived lifecycle state across all placements
 _Avoid_: Space archive, Space-scoped archive
 
 **Scratchpad**:
-The single Space auto-provisioned for a user at account creation, permanently excluded from every `all`-scope Memo collection (Home, Calendar, Map, Explore) and from Space-membership invitations. It exists only to be viewed as a tag board, not a timeline.
+A private, timeline-excluded Space belonging to one user within one actual Space. It is created when that user first opens that actual Space's Scratchpad route, remains inaccessible while the user is not a member of the parent Space, and becomes available again if the user rejoins. Deleting the parent Space deletes its associated Scratchpads and memos. Scratchpad memos are shown only at `/spaces/{space UID}/scratchpad`, not in all-scope Memo collections (Home, Calendar, Map, Explore) or Space-member lists.
 _Avoid_: Notes, Board, personal Space, inbox

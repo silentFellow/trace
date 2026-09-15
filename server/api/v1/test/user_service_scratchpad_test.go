@@ -7,20 +7,16 @@ import (
 	"github.com/stretchr/testify/require"
 
 	apiv1 "github.com/usememos/memos/proto/gen/api/v1"
-	apiv1server "github.com/usememos/memos/server/api/v1"
 	"github.com/usememos/memos/store"
 )
 
-// TestCreateUserProvisionsScratchpad covers auto-provisioning: every newly
-// created user gets exactly one Space flagged exclude_from_timeline, and
-// that Space cannot receive invitations.
-func TestCreateUserProvisionsScratchpad(t *testing.T) {
+// TestCreateUserDoesNotProvisionScratchpad keeps Scratchpad creation tied to a
+// parent Space's first-open flow rather than account creation.
+func TestCreateUserDoesNotProvisionScratchpad(t *testing.T) {
 	ctx := context.Background()
 	ts := NewTestService(t)
 	defer ts.Cleanup()
 
-	// A host user already exists so this exercises the normal (non-first-user)
-	// creation path.
 	_, err := ts.CreateHostUser(ctx, "admin")
 	require.NoError(t, err)
 
@@ -31,24 +27,10 @@ func TestCreateUserProvisionsScratchpad(t *testing.T) {
 
 	user, err := ts.Store.GetUser(ctx, &store.FindUser{Username: &created.Username})
 	require.NoError(t, err)
-	require.NotNil(t, user)
 
 	spaces, err := ts.Store.ListSpaces(ctx, &store.FindSpace{MemberUserID: &user.ID})
 	require.NoError(t, err)
-
-	var scratchpads []*store.Space
 	for _, space := range spaces {
-		if space.Payload.GetExcludeFromTimeline() {
-			scratchpads = append(scratchpads, space)
-		}
+		require.False(t, space.Payload.GetExcludeFromTimeline(), "signup must not provision a Scratchpad without a parent Space")
 	}
-	require.Len(t, scratchpads, 1, "exactly one Scratchpad must be auto-provisioned per user")
-
-	userCtx := ts.CreateUserContext(ctx, user.ID)
-	_, err = ts.Service.CreateSpaceInvitation(userCtx, &apiv1.CreateSpaceInvitationRequest{
-		Parent:          "spaces/" + scratchpads[0].UID,
-		SpaceInvitation: &apiv1.SpaceInvitation{Invitee: apiv1server.BuildUserName("admin"), Role: apiv1.SpaceMember_USER},
-	})
-	require.Error(t, err)
-	require.Contains(t, err.Error(), "cannot invite members")
 }
