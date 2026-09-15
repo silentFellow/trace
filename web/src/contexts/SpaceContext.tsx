@@ -5,7 +5,7 @@ import useCurrentUser from "@/hooks/useCurrentUser";
 import { useSpace, useSpaces } from "@/hooks/useSpaceQueries";
 import { buildCollectionScopeFilter, type CollectionScope } from "@/lib/cel-filter";
 import { getDuplicateSpaceTitles } from "@/lib/space-display";
-import { buildCollectionPath, ROUTES, resolveCollectionRoute } from "@/router/routes";
+import { buildCollectionPath, ROUTES, resolveCollectionRoute, resolveSpaceScratchpadRoute } from "@/router/routes";
 import type { Space } from "@/types/proto/api/v1/space_service_pb";
 
 interface SpaceContextValue {
@@ -32,7 +32,11 @@ export function SpaceProvider({ children }: { children: ReactNode }) {
   const userName = useCurrentUser()?.name;
   const location = useLocation();
   const navigate = useNavigate();
-  const { spaceName: selectedSpaceName } = resolveCollectionRoute(location.pathname);
+  // The nested Scratchpad route is space-scoped but not a collection, so the
+  // collection resolver yields no Space; fall back to the Scratchpad URL
+  // itself so SpaceRoute and the sidebar see the parent Space instead of a 404.
+  const { spaceName: collectionSpaceName } = resolveCollectionRoute(location.pathname);
+  const selectedSpaceName = collectionSpaceName ?? resolveSpaceScratchpadRoute(location.pathname)?.spaceName;
   const spacesQuery = useSpaces(userName);
   const spaceQuery = useSpace(userName, selectedSpaceName);
   const spaces = spacesQuery.data ?? NO_SPACES;

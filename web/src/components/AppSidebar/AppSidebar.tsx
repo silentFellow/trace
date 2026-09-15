@@ -433,23 +433,17 @@ const GlobalNavigation = () => {
           icon: PaperclipIcon,
           active: routeKind === "attachments",
         },
-        ...(() => {
-          // SpaceContext carries no selected Space on the nested Scratchpad
-          // route itself, so fall back to the URL to keep the entry visible
-          // and active while the page is open.
-          const scratchpadParentSpaceName = selectedSpaceName ?? resolveSpaceScratchpadRoute(location.pathname)?.spaceName;
-          return scratchpadParentSpaceName
-            ? [
-                {
-                  id: "scratchpad",
-                  label: t("common.scratchpad"),
-                  path: buildSpaceScratchpadPath(scratchpadParentSpaceName),
-                  icon: NotebookPenIcon,
-                  active: routeKind === "scratchpad",
-                },
-              ]
-            : [];
-        })(),
+        ...(selectedSpaceName
+          ? [
+              {
+                id: "scratchpad",
+                label: t("common.scratchpad"),
+                path: buildSpaceScratchpadPath(selectedSpaceName),
+                icon: NotebookPenIcon,
+                active: routeKind === "scratchpad",
+              },
+            ]
+          : []),
       ]
     : [
         {
