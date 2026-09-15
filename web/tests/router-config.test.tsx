@@ -1,6 +1,7 @@
 import { isValidElement } from "react";
 import { matchRoutes, type RouteObject } from "react-router-dom";
 import { describe, expect, it } from "vitest";
+import MainLayout from "@/layouts/MainLayout";
 import { ROUTES, routeConfig } from "@/router";
 import { RequireAuthRoute, RequireFullInitializationRoute, RequireGuestRoute, RequireInstanceInitializationRoute } from "@/router/guards";
 import { CALENDAR_ROUTE_PATTERN, SPACE_ROUTE_PATTERN } from "@/router/routes";
@@ -91,6 +92,10 @@ describe("router configuration", () => {
       expect(hasAncestorOfType(routeConfig, path, RequireFullInitializationRoute)).toBe(true);
     }
     expect(hasAncestorOfType(routeConfig, ROUTES.ABOUT, RequireInstanceInitializationRoute)).toBe(true);
+  });
+
+  it("renders the global scratchpad inside the main layout", () => {
+    expect(hasAncestorOfType(routeConfig, ROUTES.SCRATCHPAD, MainLayout)).toBe(true);
   });
 
   it("does not register a dedicated new memo route", () => {
