@@ -7,6 +7,7 @@ import (
 	"github.com/stretchr/testify/require"
 
 	apiv1 "github.com/usememos/memos/proto/gen/api/v1"
+	apiv1server "github.com/usememos/memos/server/api/v1"
 	"github.com/usememos/memos/store"
 )
 
@@ -53,4 +54,12 @@ func TestListMemosFindsOwnScratchpadMemo(t *testing.T) {
 	resp, err := ts.Service.ListMemos(userCtx, &apiv1.ListMemosRequest{Filter: `space == "` + spaceName + `"`})
 	require.NoError(t, err)
 	require.Len(t, resp.Memos, 1, "a request explicitly scoped to the caller's own Scratchpad must still see its memos")
+
+	// The Scratchpad page's real request combines the Space scope with other
+	// conditions (e.g. a creator filter), the same way PagedMemoList's
+	// combineCELFilters does: `(space == "...") && (creator == "...")`.
+	combinedFilter := `(space == "` + spaceName + `") && (creator == "` + apiv1server.BuildUserName("scratchpad-owner") + `")`
+	resp, err = ts.Service.ListMemos(userCtx, &apiv1.ListMemosRequest{Filter: combinedFilter})
+	require.NoError(t, err)
+	require.Len(t, resp.Memos, 1, "a combined filter naming the caller's own Scratchpad must still see its memos")
 }

@@ -100,11 +100,14 @@ func (s *APIV1Service) resolveMemoAccessScope(ctx context.Context) (*store.MemoA
 	return accessScope, currentUser, nil
 }
 
-// explicitSpaceFilterPattern matches the single-condition space-scope filter
-// the frontend sends when a request is scoped to exactly one Space (see
-// buildCollectionScopeFilter and the Scratchpad page), e.g. `space ==
-// "spaces/abc123"`.
-var explicitSpaceFilterPattern = regexp.MustCompile(`^\s*space\s*==\s*"([^"]+)"\s*$`)
+// explicitSpaceFilterPattern finds `space == "..."` conditions anywhere in a
+// filter string. combineCELFilters (web/src/lib/cel-filter.ts) wraps every
+// top-level condition in its own parens and joins them with " && ", so a
+// Space scope combined with other conditions looks like `(space ==
+// "spaces/abc123") && (creator == "users/x")`; this is intentionally
+// unanchored so it matches that condition regardless of what else is ANDed
+// alongside it.
+var explicitSpaceFilterPattern = regexp.MustCompile(`space\s*==\s*"([^"]+)"`)
 
 // allowExplicitlyRequestedSpace lets a caller see their own timeline-excluded
 // Space (their Scratchpad) when a request explicitly names it, without
@@ -115,23 +118,23 @@ func (s *APIV1Service) allowExplicitlyRequestedSpace(ctx context.Context, access
 	if len(accessScope.ExcludeSpaceIDs) == 0 {
 		return
 	}
-	match := explicitSpaceFilterPattern.FindStringSubmatch(filter)
-	if match == nil {
-		return
-	}
-	spaceUID, err := ExtractSpaceUIDFromName(match[1])
-	if err != nil {
-		return
-	}
-	space, err := s.Store.GetSpace(ctx, &store.FindSpace{UID: &spaceUID})
-	if err != nil || space == nil {
-		return
-	}
-	remaining := accessScope.ExcludeSpaceIDs[:0]
-	for _, id := range accessScope.ExcludeSpaceIDs {
-		if id != space.ID {
-			remaining = append(remaining, id)
+	remaining := accessScope.ExcludeSpaceIDs
+	for _, match := range explicitSpaceFilterPattern.FindAllStringSubmatch(filter, -1) {
+		spaceUID, err := ExtractSpaceUIDFromName(match[1])
+		if err != nil {
+			continue
 		}
+		space, err := s.Store.GetSpace(ctx, &store.FindSpace{UID: &spaceUID})
+		if err != nil || space == nil {
+			continue
+		}
+		filtered := remaining[:0]
+		for _, id := range remaining {
+			if id != space.ID {
+				filtered = append(filtered, id)
+			}
+		}
+		remaining = filtered
 	}
 	accessScope.ExcludeSpaceIDs = remaining
 }
