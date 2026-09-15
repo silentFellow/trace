@@ -90,7 +90,11 @@ type Space struct {
 	MemberCount int32 `protobuf:"varint,5,opt,name=member_count,json=memberCount,proto3" json:"member_count,omitempty"`
 	// Optional. Display icon. Omit when updating with the "icon" mask to reset
 	// to the default Space mark.
-	Icon          *Space_Icon `protobuf:"bytes,6,opt,name=icon,proto3" json:"icon,omitempty"`
+	Icon *Space_Icon `protobuf:"bytes,6,opt,name=icon,proto3" json:"icon,omitempty"`
+	// Output only. True for the caller's single, auto-provisioned Scratchpad
+	// Space: permanently excluded from all-scope memo collections (Home,
+	// Calendar, Map, Explore) and cannot receive invitations.
+	IsScratchpad  bool `protobuf:"varint,7,opt,name=is_scratchpad,json=isScratchpad,proto3" json:"is_scratchpad,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -165,6 +169,13 @@ func (x *Space) GetIcon() *Space_Icon {
 		return x.Icon
 	}
 	return nil
+}
+
+func (x *Space) GetIsScratchpad() bool {
+	if x != nil {
+		return x.IsScratchpad
+	}
+	return false
 }
 
 // SpaceMember is a user's membership and governance role in a space.
@@ -1422,14 +1433,15 @@ var File_api_v1_space_service_proto protoreflect.FileDescriptor
 
 const file_api_v1_space_service_proto_rawDesc = "" +
 	"\n" +
-	"\x1aapi/v1/space_service.proto\x12\fmemos.api.v1\x1a\x1cgoogle/api/annotations.proto\x1a\x17google/api/client.proto\x1a\x1fgoogle/api/field_behavior.proto\x1a\x19google/api/resource.proto\x1a\x1bgoogle/protobuf/empty.proto\x1a google/protobuf/field_mask.proto\"\x8f\x03\n" +
+	"\x1aapi/v1/space_service.proto\x12\fmemos.api.v1\x1a\x1cgoogle/api/annotations.proto\x1a\x17google/api/client.proto\x1a\x1fgoogle/api/field_behavior.proto\x1a\x19google/api/resource.proto\x1a\x1bgoogle/protobuf/empty.proto\x1a google/protobuf/field_mask.proto\"\xb9\x03\n" +
 	"\x05Space\x12\x17\n" +
 	"\x04name\x18\x01 \x01(\tB\x03\xe0A\bR\x04name\x12\x19\n" +
 	"\x05title\x18\x02 \x01(\tB\x03\xe0A\x02R\x05title\x12%\n" +
 	"\vdescription\x18\x03 \x01(\tB\x03\xe0A\x01R\vdescription\x12O\n" +
 	"\x11current_user_role\x18\x04 \x01(\x0e2\x1e.memos.api.v1.SpaceMember.RoleB\x03\xe0A\x03R\x0fcurrentUserRole\x12&\n" +
 	"\fmember_count\x18\x05 \x01(\x05B\x03\xe0A\x03R\vmemberCount\x121\n" +
-	"\x04icon\x18\x06 \x01(\v2\x18.memos.api.v1.Space.IconB\x03\xe0A\x01R\x04icon\x1aA\n" +
+	"\x04icon\x18\x06 \x01(\v2\x18.memos.api.v1.Space.IconB\x03\xe0A\x01R\x04icon\x12(\n" +
+	"\ris_scratchpad\x18\a \x01(\bB\x03\xe0A\x03R\fisScratchpad\x1aA\n" +
 	"\x04Icon\x12\x16\n" +
 	"\x05emoji\x18\x01 \x01(\tH\x00R\x05emoji\x12\x18\n" +
 	"\x06lucide\x18\x02 \x01(\tH\x00R\x06lucideB\a\n" +

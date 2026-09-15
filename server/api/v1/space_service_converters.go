@@ -33,10 +33,11 @@ func convertSpaceMetadataFromStore(space *store.Space) *v1pb.Space {
 		return nil
 	}
 	return &v1pb.Space{
-		Name:        buildSpaceName(space.UID),
-		Title:       space.Title,
-		Description: space.Description,
-		Icon:        convertSpaceIconFromStore(space.Payload.GetIcon()),
+		Name:         buildSpaceName(space.UID),
+		Title:        space.Title,
+		Description:  space.Description,
+		Icon:         convertSpaceIconFromStore(space.Payload.GetIcon()),
+		IsScratchpad: space.Payload.GetExcludeFromTimeline(),
 	}
 }
 

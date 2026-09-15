@@ -162,6 +162,11 @@ message Space {
   // to the default Space mark.
   Icon icon = 6 [(google.api.field_behavior) = OPTIONAL];
 
+  // Output only. True for the caller's single, auto-provisioned Scratchpad
+  // Space: permanently excluded from all-scope memo collections (Home,
+  // Calendar, Map, Explore) and cannot receive invitations.
+  bool is_scratchpad = 7 [(google.api.field_behavior) = OUTPUT_ONLY];
+
   message Icon {
     oneof value {
       // A Unicode emoji sequence.

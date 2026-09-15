@@ -4465,6 +4465,13 @@ components:
                     description: |-
                         Optional. Display icon. Omit when updating with the "icon" mask to reset
                          to the default Space mark.
+                isScratchpad:
+                    readOnly: true
+                    type: boolean
+                    description: |-
+                        Output only. True for the caller's single, auto-provisioned Scratchpad
+                         Space: permanently excluded from all-scope memo collections (Home,
+                         Calendar, Map, Explore) and cannot receive invitations.
             description: Space is a collaboration boundary for placed memos.
         SpaceInvitation:
             required:
