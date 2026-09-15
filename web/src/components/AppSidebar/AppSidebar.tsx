@@ -696,7 +696,7 @@ const AppSidebar = ({ className }: { className?: string }) => {
           </Link>
         )}
       </footer>
-      <ExportDialog open={exportOpen} onOpenChange={setExportOpen} />
+      {exportOpen && <ExportDialog open={exportOpen} onOpenChange={setExportOpen} />}
     </aside>
   );
 };
