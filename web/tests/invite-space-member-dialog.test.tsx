@@ -79,6 +79,7 @@ const productSpace: Space = {
   description: "Product decisions",
   currentUserRole: SpaceMember_Role.ADMIN,
   memberCount: 1,
+  isScratchpad: false,
 };
 
 const alice: User = {

@@ -75,6 +75,7 @@ vi.mock("@/components/CreateSpaceDialog", () => ({
               description: "",
               currentUserRole: 1,
               memberCount: 1,
+              isScratchpad: false,
             };
             state.spaces = [...state.spaces, createdSpace];
             onCreated?.(createdSpace);
@@ -124,6 +125,7 @@ const adminSpace: Space = {
   description: "Product decisions",
   currentUserRole: 1,
   memberCount: 2,
+  isScratchpad: false,
 };
 
 const userSpace: Space = {
@@ -157,6 +159,7 @@ const receivedInvitation: SpaceInvitation = {
     description: "Research notes",
     currentUserRole: 0,
     memberCount: 0,
+    isScratchpad: false,
   },
 };
 

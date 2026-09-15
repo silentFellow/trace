@@ -16,6 +16,7 @@ import {
   type LucideIcon,
   MapIcon,
   MenuIcon,
+  NotebookPenIcon,
   PaperclipIcon,
   SearchIcon,
   SquarePenIcon,
@@ -291,6 +292,8 @@ const RouteSidebarContent = () => {
   if (kind === "calendar") return <CollectionSidebarContent context="home" showStatistics={false} />;
   if (kind === "map") return <CollectionSidebarContent context="home" showStatistics={false} scopeFilter={MAP_MEMO_FILTER} />;
   if (kind === "attachments") return <AttachmentsSidebarContent />;
+  // Its tag columns are the layout; a duplicate tag list in the sidebar would be redundant.
+  if (kind === "scratchpad") return null;
   if (kind === "inbox") return <InboxSidebarContent />;
   if (kind === "settings") return <SettingsSidebarContent />;
   if (kind === "memo") return <MemoDetailSidebarContent />;
@@ -399,6 +402,14 @@ const GlobalNavigation = () => {
           path: collectionPathForLocation(ROUTES.ATTACHMENTS, location.pathname),
           icon: PaperclipIcon,
           active: routeKind === "attachments",
+        },
+        {
+          id: "scratchpad",
+          label: t("common.scratchpad"),
+          // Scratchpad is not a collection route, so it never carries a Space into the URL.
+          path: ROUTES.SCRATCHPAD,
+          icon: NotebookPenIcon,
+          active: routeKind === "scratchpad",
         },
       ]
     : [
