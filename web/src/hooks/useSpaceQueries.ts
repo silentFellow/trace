@@ -21,6 +21,8 @@ const SPACE_LIST_STALE_TIME = 1000 * 60 * 5;
 
 export interface SpaceQueryOptions {
   enabled?: boolean;
+  /** The Scratchpad is deliberately not part of the regular Spaces list (switcher, Settings, move dialog); only the Scratchpad page itself needs to find it. */
+  includeScratchpad?: boolean;
 }
 
 export type UpdateSpaceVariables = {
@@ -102,6 +104,7 @@ const invalidateMembershipSensitiveQueries = (queryClient: QueryClient) => {
 };
 
 export function useSpaces(viewerName: string | undefined, options?: SpaceQueryOptions) {
+  const includeScratchpad = options?.includeScratchpad ?? false;
   return useQuery({
     queryKey: spaceKeys.list(viewerName ?? ""),
     queryFn: async () => {
@@ -119,6 +122,10 @@ export function useSpaces(viewerName: string | undefined, options?: SpaceQueryOp
 
       return spaces;
     },
+    // A select transform, not a filter in queryFn: every caller shares one cached fetch
+    // regardless of includeScratchpad, so the Scratchpad page and the regular-Spaces
+    // surfaces (switcher, Settings, move dialog) never trigger duplicate requests.
+    select: includeScratchpad ? undefined : (spaces) => spaces.filter((space) => !space.isScratchpad),
     enabled: Boolean(viewerName) && (options?.enabled ?? true),
     // SpaceProvider wraps the whole route tree, so this drains every page on boot.
     // Space membership is near-static, so don't re-run that loop on each tab return.
