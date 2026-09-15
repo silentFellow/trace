@@ -83,16 +83,13 @@ func (s *APIV1Service) ListMemos(ctx context.Context, request *v1pb.ListMemosReq
 		// Exclude comments by default.
 		ExcludeComments: true,
 	}
-	accessScope, currentUser, err := s.resolveMemoAccessScope(ctx)
+	accessScope, currentUser, err := s.resolveMemoAccessScope(ctx, request.Filter)
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "%v", err)
 	}
 	// An anonymous caller may only list at all when the instance permits it.
 	if currentUser == nil && !accessScope.AllowPublic {
 		return nil, status.Errorf(codes.Unauthenticated, "user not authenticated")
-	}
-	if currentUser != nil && request.Filter != "" {
-		s.allowExplicitlyRequestedSpace(ctx, accessScope, request.Filter)
 	}
 	memoFind.Access = accessScope
 

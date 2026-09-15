@@ -62,7 +62,7 @@ func (s *APIV1Service) ListAllUserStats(ctx context.Context, request *v1pb.ListA
 		RowStatus:       &rowStatus,
 	}
 
-	accessScope, currentUser, err := s.resolveMemoAccessScope(ctx)
+	accessScope, currentUser, err := s.resolveMemoAccessScope(ctx, request.Filter)
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "%v", err)
 	}
@@ -190,7 +190,7 @@ func (s *APIV1Service) GetUserStats(ctx context.Context, request *v1pb.GetUserSt
 	}
 	userID := user.ID
 
-	accessScope, currentUser, err := s.resolveMemoAccessScope(ctx)
+	accessScope, currentUser, err := s.resolveMemoAccessScope(ctx, request.Filter)
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "%v", err)
 	}

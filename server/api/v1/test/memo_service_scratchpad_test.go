@@ -63,3 +63,48 @@ func TestListMemosFindsOwnScratchpadMemo(t *testing.T) {
 	require.NoError(t, err)
 	require.Len(t, resp.Memos, 1, "a combined filter naming the caller's own Scratchpad must still see its memos")
 }
+
+// TestGetUserStatsFindsOwnScratchpadTags covers the Scratchpad sidebar's tag
+// list: it calls GetUserStats scoped to the caller's own Scratchpad Space the
+// same way ListMemos does, and must not be silently zeroed by the same
+// timeline-exclusion predicate.
+func TestGetUserStatsFindsOwnScratchpadTags(t *testing.T) {
+	ctx := context.Background()
+	ts := NewTestService(t)
+	defer ts.Cleanup()
+
+	_, err := ts.CreateHostUser(ctx, "admin")
+	require.NoError(t, err)
+
+	created, err := ts.Service.CreateUser(ctx, &apiv1.CreateUserRequest{
+		User: &apiv1.User{Username: "scratchpad-tags-owner", Email: "scratchpad-tags-owner@example.com", Password: "password123"},
+	})
+	require.NoError(t, err)
+
+	user, err := ts.Store.GetUser(ctx, &store.FindUser{Username: &created.Username})
+	require.NoError(t, err)
+
+	spaces, err := ts.Store.ListSpaces(ctx, &store.FindSpace{MemberUserID: &user.ID})
+	require.NoError(t, err)
+	var scratchpad *store.Space
+	for _, space := range spaces {
+		if space.Payload.GetExcludeFromTimeline() {
+			scratchpad = space
+		}
+	}
+	require.NotNil(t, scratchpad)
+
+	userCtx := ts.CreateUserContext(ctx, user.ID)
+	spaceName := "spaces/" + scratchpad.UID
+	_, err = ts.Service.CreateMemo(userCtx, &apiv1.CreateMemoRequest{
+		Memo: &apiv1.Memo{Content: "#idea a scratchpad note", Space: &spaceName},
+	})
+	require.NoError(t, err)
+
+	stats, err := ts.Service.GetUserStats(userCtx, &apiv1.GetUserStatsRequest{
+		Name:   apiv1server.BuildUserName("scratchpad-tags-owner"),
+		Filter: `space == "` + spaceName + `"`,
+	})
+	require.NoError(t, err)
+	require.Contains(t, stats.TagCount, "idea", "a tag on a memo in the caller's own Scratchpad must be counted")
+}

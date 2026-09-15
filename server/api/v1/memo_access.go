@@ -77,7 +77,13 @@ func newMemoAccessScope(currentUser *store.User, allowPublic bool) *store.MemoAc
 // scope. For an anonymous caller the instance access policy decides whether
 // PUBLIC memos are readable at all. Callers map the returned error to their own
 // transport representation.
-func (s *APIV1Service) resolveMemoAccessScope(ctx context.Context) (*store.MemoAccessScope, *store.User, error) {
+//
+// requestFilter is the caller's raw request.Filter, if any: when it explicitly
+// names one of the caller's own timeline-excluded Spaces (their Scratchpad),
+// that Space is not excluded for this call, so a request scoped to the
+// Scratchpad itself (list, stats, ...) still sees it. Pass "" when the
+// endpoint has no client filter to inspect.
+func (s *APIV1Service) resolveMemoAccessScope(ctx context.Context, requestFilter string) (*store.MemoAccessScope, *store.User, error) {
 	currentUser, err := s.fetchCurrentUser(ctx)
 	if err != nil {
 		return nil, nil, errors.Wrap(err, "failed to get current user")
@@ -96,6 +102,9 @@ func (s *APIV1Service) resolveMemoAccessScope(ctx context.Context) (*store.MemoA
 			return nil, nil, errors.Wrap(err, "failed to resolve timeline-excluded spaces")
 		}
 		accessScope.ExcludeSpaceIDs = excluded
+		if requestFilter != "" {
+			s.allowExplicitlyRequestedSpace(ctx, accessScope, requestFilter)
+		}
 	}
 	return accessScope, currentUser, nil
 }

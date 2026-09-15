@@ -11,9 +11,11 @@ import useCurrentUser from "@/hooks/useCurrentUser";
 import { useSpaces } from "@/hooks/useSpaceQueries";
 import { State } from "@/types/proto/api/v1/common_pb";
 import { Memo } from "@/types/proto/api/v1/memo_service_pb";
+import { useTranslate } from "@/utils/i18n";
 
 const Scratchpad = () => {
   const currentUser = useCurrentUser();
+  const t = useTranslate();
   const { isUserSettingsInitialized } = useAuth();
   const { filters } = useMemoFilterContext();
   // The Scratchpad page is the one place allowed to see its own Space; every
@@ -64,7 +66,7 @@ const Scratchpad = () => {
                 key={editorCacheKey}
                 className={useGrid ? undefined : "mb-2"}
                 cacheKey={editorCacheKey}
-                placeholder="Jot something down… add a #tag to sort it into a column"
+                placeholder={t("editor.any-thoughts")}
                 defaultCreateTime={defaultCreateTime}
                 defaultSpace={scratchpadSpace.name}
               />

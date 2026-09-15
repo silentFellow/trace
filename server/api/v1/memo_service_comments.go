@@ -129,7 +129,7 @@ func (s *APIV1Service) ListMemoComments(ctx context.Context, request *v1pb.ListM
 	if err := s.checkMemoReadAccess(ctx, memo); err != nil {
 		return nil, err
 	}
-	accessScope, _, err := s.resolveMemoAccessScope(ctx)
+	accessScope, _, err := s.resolveMemoAccessScope(ctx, "")
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "%v", err)
 	}

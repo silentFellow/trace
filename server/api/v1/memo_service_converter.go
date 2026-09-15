@@ -228,7 +228,7 @@ func (s *APIV1Service) batchConvertMemoRelations(ctx context.Context, memos []*s
 		return map[int32][]*v1pb.MemoRelation{}, nil
 	}
 
-	accessScope, _, err := s.resolveMemoAccessScope(ctx)
+	accessScope, _, err := s.resolveMemoAccessScope(ctx, "")
 	if err != nil {
 		return nil, err
 	}
