@@ -55,3 +55,7 @@ _Avoid_: Unassigned scope, no-Space collection
 **Archived memo collection**:
 The signed-in user's memos in the archived lifecycle state across all placements. It is user-level and independent of the current Space collection scope.
 _Avoid_: Space archive, Space-scoped archive
+
+**Scratchpad**:
+The single Space auto-provisioned for a user at account creation, permanently excluded from every `all`-scope Memo collection (Home, Calendar, Map, Explore) and from Space-membership invitations. It exists only to be viewed as a tag board, not a timeline.
+_Avoid_: Notes, Board, personal Space, inbox
