@@ -1307,6 +1307,34 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/Status'
+    /api/v1/scratchpad:ensure:
+        post:
+            tags:
+                - SpaceService
+            description: |-
+                GetOrCreatePersonalScratchpad returns the caller's parentless personal
+                 Scratchpad, creating it on the first request. It backs the global
+                 Scratchpad view's composer.
+            operationId: SpaceService_GetOrCreatePersonalScratchpad
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/GetOrCreatePersonalScratchpadRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Space'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
     /api/v1/shares/{shareToken}/memo:
         get:
             tags:
@@ -3343,6 +3371,9 @@ components:
                     allOf:
                         - $ref: '#/components/schemas/User'
                     description: The authenticated user's information.
+        GetOrCreatePersonalScratchpadRequest:
+            type: object
+            properties: {}
         GetOrCreateSpaceScratchpadRequest:
             required:
                 - parent

@@ -221,6 +221,34 @@ func (s *Store) GetOrCreateScratchpad(ctx context.Context, parentUID string, use
 	return created, true, nil
 }
 
+// GetOrCreatePersonalScratchpad returns the caller's parentless personal
+// Scratchpad, creating it exactly once across concurrent first opens. It backs
+// the global Scratchpad view, which aggregates every Scratchpad the caller owns.
+func (s *Store) GetOrCreatePersonalScratchpad(ctx context.Context, userID int32) (*Space, bool, error) {
+	s.scratchpadMu.Lock()
+	defer s.scratchpadMu.Unlock()
+
+	spaces, err := s.ListSpaces(ctx, &FindSpace{MemberUserID: &userID})
+	if err != nil {
+		return nil, false, err
+	}
+	for _, space := range spaces {
+		if space.Payload.GetExcludeFromTimeline() && space.Payload.GetParentSpaceUid() == "" {
+			return space, false, nil
+		}
+	}
+
+	created, err := s.CreateSpace(ctx, &Space{
+		UID:     random.UUID(),
+		Title:   "Scratchpad",
+		Payload: &storepb.SpacePayload{ExcludeFromTimeline: true},
+	}, userID)
+	if err != nil {
+		return nil, false, err
+	}
+	return created, true, nil
+}
+
 // ListSpaces returns spaces matching find.
 func (s *Store) ListSpaces(ctx context.Context, find *FindSpace) ([]*Space, error) {
 	return s.driver.ListSpaces(ctx, find)

@@ -568,6 +568,42 @@ func (x *GetOrCreateSpaceScratchpadRequest) GetParent() string {
 	return ""
 }
 
+type GetOrCreatePersonalScratchpadRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetOrCreatePersonalScratchpadRequest) Reset() {
+	*x = GetOrCreatePersonalScratchpadRequest{}
+	mi := &file_api_v1_space_service_proto_msgTypes[8]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetOrCreatePersonalScratchpadRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetOrCreatePersonalScratchpadRequest) ProtoMessage() {}
+
+func (x *GetOrCreatePersonalScratchpadRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_api_v1_space_service_proto_msgTypes[8]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetOrCreatePersonalScratchpadRequest.ProtoReflect.Descriptor instead.
+func (*GetOrCreatePersonalScratchpadRequest) Descriptor() ([]byte, []int) {
+	return file_api_v1_space_service_proto_rawDescGZIP(), []int{8}
+}
+
 type UpdateSpaceRequest struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Required. The space with updated values.
@@ -580,7 +616,7 @@ type UpdateSpaceRequest struct {
 
 func (x *UpdateSpaceRequest) Reset() {
 	*x = UpdateSpaceRequest{}
-	mi := &file_api_v1_space_service_proto_msgTypes[8]
+	mi := &file_api_v1_space_service_proto_msgTypes[9]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -592,7 +628,7 @@ func (x *UpdateSpaceRequest) String() string {
 func (*UpdateSpaceRequest) ProtoMessage() {}
 
 func (x *UpdateSpaceRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_v1_space_service_proto_msgTypes[8]
+	mi := &file_api_v1_space_service_proto_msgTypes[9]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -605,7 +641,7 @@ func (x *UpdateSpaceRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UpdateSpaceRequest.ProtoReflect.Descriptor instead.
 func (*UpdateSpaceRequest) Descriptor() ([]byte, []int) {
-	return file_api_v1_space_service_proto_rawDescGZIP(), []int{8}
+	return file_api_v1_space_service_proto_rawDescGZIP(), []int{9}
 }
 
 func (x *UpdateSpaceRequest) GetSpace() *Space {
@@ -632,7 +668,7 @@ type DeleteSpaceRequest struct {
 
 func (x *DeleteSpaceRequest) Reset() {
 	*x = DeleteSpaceRequest{}
-	mi := &file_api_v1_space_service_proto_msgTypes[9]
+	mi := &file_api_v1_space_service_proto_msgTypes[10]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -644,7 +680,7 @@ func (x *DeleteSpaceRequest) String() string {
 func (*DeleteSpaceRequest) ProtoMessage() {}
 
 func (x *DeleteSpaceRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_v1_space_service_proto_msgTypes[9]
+	mi := &file_api_v1_space_service_proto_msgTypes[10]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -657,7 +693,7 @@ func (x *DeleteSpaceRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DeleteSpaceRequest.ProtoReflect.Descriptor instead.
 func (*DeleteSpaceRequest) Descriptor() ([]byte, []int) {
-	return file_api_v1_space_service_proto_rawDescGZIP(), []int{9}
+	return file_api_v1_space_service_proto_rawDescGZIP(), []int{10}
 }
 
 func (x *DeleteSpaceRequest) GetName() string {
@@ -679,7 +715,7 @@ type CreateSpaceInvitationRequest struct {
 
 func (x *CreateSpaceInvitationRequest) Reset() {
 	*x = CreateSpaceInvitationRequest{}
-	mi := &file_api_v1_space_service_proto_msgTypes[10]
+	mi := &file_api_v1_space_service_proto_msgTypes[11]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -691,7 +727,7 @@ func (x *CreateSpaceInvitationRequest) String() string {
 func (*CreateSpaceInvitationRequest) ProtoMessage() {}
 
 func (x *CreateSpaceInvitationRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_v1_space_service_proto_msgTypes[10]
+	mi := &file_api_v1_space_service_proto_msgTypes[11]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -704,7 +740,7 @@ func (x *CreateSpaceInvitationRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CreateSpaceInvitationRequest.ProtoReflect.Descriptor instead.
 func (*CreateSpaceInvitationRequest) Descriptor() ([]byte, []int) {
-	return file_api_v1_space_service_proto_rawDescGZIP(), []int{10}
+	return file_api_v1_space_service_proto_rawDescGZIP(), []int{11}
 }
 
 func (x *CreateSpaceInvitationRequest) GetParent() string {
@@ -735,7 +771,7 @@ type ListSpaceInvitationsRequest struct {
 
 func (x *ListSpaceInvitationsRequest) Reset() {
 	*x = ListSpaceInvitationsRequest{}
-	mi := &file_api_v1_space_service_proto_msgTypes[11]
+	mi := &file_api_v1_space_service_proto_msgTypes[12]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -747,7 +783,7 @@ func (x *ListSpaceInvitationsRequest) String() string {
 func (*ListSpaceInvitationsRequest) ProtoMessage() {}
 
 func (x *ListSpaceInvitationsRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_v1_space_service_proto_msgTypes[11]
+	mi := &file_api_v1_space_service_proto_msgTypes[12]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -760,7 +796,7 @@ func (x *ListSpaceInvitationsRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListSpaceInvitationsRequest.ProtoReflect.Descriptor instead.
 func (*ListSpaceInvitationsRequest) Descriptor() ([]byte, []int) {
-	return file_api_v1_space_service_proto_rawDescGZIP(), []int{11}
+	return file_api_v1_space_service_proto_rawDescGZIP(), []int{12}
 }
 
 func (x *ListSpaceInvitationsRequest) GetParent() string {
@@ -794,7 +830,7 @@ type ListSpaceInvitationsResponse struct {
 
 func (x *ListSpaceInvitationsResponse) Reset() {
 	*x = ListSpaceInvitationsResponse{}
-	mi := &file_api_v1_space_service_proto_msgTypes[12]
+	mi := &file_api_v1_space_service_proto_msgTypes[13]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -806,7 +842,7 @@ func (x *ListSpaceInvitationsResponse) String() string {
 func (*ListSpaceInvitationsResponse) ProtoMessage() {}
 
 func (x *ListSpaceInvitationsResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_api_v1_space_service_proto_msgTypes[12]
+	mi := &file_api_v1_space_service_proto_msgTypes[13]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -819,7 +855,7 @@ func (x *ListSpaceInvitationsResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListSpaceInvitationsResponse.ProtoReflect.Descriptor instead.
 func (*ListSpaceInvitationsResponse) Descriptor() ([]byte, []int) {
-	return file_api_v1_space_service_proto_rawDescGZIP(), []int{12}
+	return file_api_v1_space_service_proto_rawDescGZIP(), []int{13}
 }
 
 func (x *ListSpaceInvitationsResponse) GetSpaceInvitations() []*SpaceInvitation {
@@ -850,7 +886,7 @@ type ListUserSpaceInvitationsRequest struct {
 
 func (x *ListUserSpaceInvitationsRequest) Reset() {
 	*x = ListUserSpaceInvitationsRequest{}
-	mi := &file_api_v1_space_service_proto_msgTypes[13]
+	mi := &file_api_v1_space_service_proto_msgTypes[14]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -862,7 +898,7 @@ func (x *ListUserSpaceInvitationsRequest) String() string {
 func (*ListUserSpaceInvitationsRequest) ProtoMessage() {}
 
 func (x *ListUserSpaceInvitationsRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_v1_space_service_proto_msgTypes[13]
+	mi := &file_api_v1_space_service_proto_msgTypes[14]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -875,7 +911,7 @@ func (x *ListUserSpaceInvitationsRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListUserSpaceInvitationsRequest.ProtoReflect.Descriptor instead.
 func (*ListUserSpaceInvitationsRequest) Descriptor() ([]byte, []int) {
-	return file_api_v1_space_service_proto_rawDescGZIP(), []int{13}
+	return file_api_v1_space_service_proto_rawDescGZIP(), []int{14}
 }
 
 func (x *ListUserSpaceInvitationsRequest) GetParent() string {
@@ -909,7 +945,7 @@ type ListUserSpaceInvitationsResponse struct {
 
 func (x *ListUserSpaceInvitationsResponse) Reset() {
 	*x = ListUserSpaceInvitationsResponse{}
-	mi := &file_api_v1_space_service_proto_msgTypes[14]
+	mi := &file_api_v1_space_service_proto_msgTypes[15]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -921,7 +957,7 @@ func (x *ListUserSpaceInvitationsResponse) String() string {
 func (*ListUserSpaceInvitationsResponse) ProtoMessage() {}
 
 func (x *ListUserSpaceInvitationsResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_api_v1_space_service_proto_msgTypes[14]
+	mi := &file_api_v1_space_service_proto_msgTypes[15]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -934,7 +970,7 @@ func (x *ListUserSpaceInvitationsResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListUserSpaceInvitationsResponse.ProtoReflect.Descriptor instead.
 func (*ListUserSpaceInvitationsResponse) Descriptor() ([]byte, []int) {
-	return file_api_v1_space_service_proto_rawDescGZIP(), []int{14}
+	return file_api_v1_space_service_proto_rawDescGZIP(), []int{15}
 }
 
 func (x *ListUserSpaceInvitationsResponse) GetSpaceInvitations() []*SpaceInvitation {
@@ -961,7 +997,7 @@ type GetSpaceInvitationRequest struct {
 
 func (x *GetSpaceInvitationRequest) Reset() {
 	*x = GetSpaceInvitationRequest{}
-	mi := &file_api_v1_space_service_proto_msgTypes[15]
+	mi := &file_api_v1_space_service_proto_msgTypes[16]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -973,7 +1009,7 @@ func (x *GetSpaceInvitationRequest) String() string {
 func (*GetSpaceInvitationRequest) ProtoMessage() {}
 
 func (x *GetSpaceInvitationRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_v1_space_service_proto_msgTypes[15]
+	mi := &file_api_v1_space_service_proto_msgTypes[16]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -986,7 +1022,7 @@ func (x *GetSpaceInvitationRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetSpaceInvitationRequest.ProtoReflect.Descriptor instead.
 func (*GetSpaceInvitationRequest) Descriptor() ([]byte, []int) {
-	return file_api_v1_space_service_proto_rawDescGZIP(), []int{15}
+	return file_api_v1_space_service_proto_rawDescGZIP(), []int{16}
 }
 
 func (x *GetSpaceInvitationRequest) GetName() string {
@@ -1006,7 +1042,7 @@ type DeleteSpaceInvitationRequest struct {
 
 func (x *DeleteSpaceInvitationRequest) Reset() {
 	*x = DeleteSpaceInvitationRequest{}
-	mi := &file_api_v1_space_service_proto_msgTypes[16]
+	mi := &file_api_v1_space_service_proto_msgTypes[17]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1018,7 +1054,7 @@ func (x *DeleteSpaceInvitationRequest) String() string {
 func (*DeleteSpaceInvitationRequest) ProtoMessage() {}
 
 func (x *DeleteSpaceInvitationRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_v1_space_service_proto_msgTypes[16]
+	mi := &file_api_v1_space_service_proto_msgTypes[17]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1031,7 +1067,7 @@ func (x *DeleteSpaceInvitationRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DeleteSpaceInvitationRequest.ProtoReflect.Descriptor instead.
 func (*DeleteSpaceInvitationRequest) Descriptor() ([]byte, []int) {
-	return file_api_v1_space_service_proto_rawDescGZIP(), []int{16}
+	return file_api_v1_space_service_proto_rawDescGZIP(), []int{17}
 }
 
 func (x *DeleteSpaceInvitationRequest) GetName() string {
@@ -1051,7 +1087,7 @@ type AcceptSpaceInvitationRequest struct {
 
 func (x *AcceptSpaceInvitationRequest) Reset() {
 	*x = AcceptSpaceInvitationRequest{}
-	mi := &file_api_v1_space_service_proto_msgTypes[17]
+	mi := &file_api_v1_space_service_proto_msgTypes[18]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1063,7 +1099,7 @@ func (x *AcceptSpaceInvitationRequest) String() string {
 func (*AcceptSpaceInvitationRequest) ProtoMessage() {}
 
 func (x *AcceptSpaceInvitationRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_v1_space_service_proto_msgTypes[17]
+	mi := &file_api_v1_space_service_proto_msgTypes[18]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1076,7 +1112,7 @@ func (x *AcceptSpaceInvitationRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use AcceptSpaceInvitationRequest.ProtoReflect.Descriptor instead.
 func (*AcceptSpaceInvitationRequest) Descriptor() ([]byte, []int) {
-	return file_api_v1_space_service_proto_rawDescGZIP(), []int{17}
+	return file_api_v1_space_service_proto_rawDescGZIP(), []int{18}
 }
 
 func (x *AcceptSpaceInvitationRequest) GetName() string {
@@ -1096,7 +1132,7 @@ type DeclineSpaceInvitationRequest struct {
 
 func (x *DeclineSpaceInvitationRequest) Reset() {
 	*x = DeclineSpaceInvitationRequest{}
-	mi := &file_api_v1_space_service_proto_msgTypes[18]
+	mi := &file_api_v1_space_service_proto_msgTypes[19]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1108,7 +1144,7 @@ func (x *DeclineSpaceInvitationRequest) String() string {
 func (*DeclineSpaceInvitationRequest) ProtoMessage() {}
 
 func (x *DeclineSpaceInvitationRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_v1_space_service_proto_msgTypes[18]
+	mi := &file_api_v1_space_service_proto_msgTypes[19]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1121,7 +1157,7 @@ func (x *DeclineSpaceInvitationRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DeclineSpaceInvitationRequest.ProtoReflect.Descriptor instead.
 func (*DeclineSpaceInvitationRequest) Descriptor() ([]byte, []int) {
-	return file_api_v1_space_service_proto_rawDescGZIP(), []int{18}
+	return file_api_v1_space_service_proto_rawDescGZIP(), []int{19}
 }
 
 func (x *DeclineSpaceInvitationRequest) GetName() string {
@@ -1145,7 +1181,7 @@ type ListSpaceMembersRequest struct {
 
 func (x *ListSpaceMembersRequest) Reset() {
 	*x = ListSpaceMembersRequest{}
-	mi := &file_api_v1_space_service_proto_msgTypes[19]
+	mi := &file_api_v1_space_service_proto_msgTypes[20]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1157,7 +1193,7 @@ func (x *ListSpaceMembersRequest) String() string {
 func (*ListSpaceMembersRequest) ProtoMessage() {}
 
 func (x *ListSpaceMembersRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_v1_space_service_proto_msgTypes[19]
+	mi := &file_api_v1_space_service_proto_msgTypes[20]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1170,7 +1206,7 @@ func (x *ListSpaceMembersRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListSpaceMembersRequest.ProtoReflect.Descriptor instead.
 func (*ListSpaceMembersRequest) Descriptor() ([]byte, []int) {
-	return file_api_v1_space_service_proto_rawDescGZIP(), []int{19}
+	return file_api_v1_space_service_proto_rawDescGZIP(), []int{20}
 }
 
 func (x *ListSpaceMembersRequest) GetParent() string {
@@ -1204,7 +1240,7 @@ type ListSpaceMembersResponse struct {
 
 func (x *ListSpaceMembersResponse) Reset() {
 	*x = ListSpaceMembersResponse{}
-	mi := &file_api_v1_space_service_proto_msgTypes[20]
+	mi := &file_api_v1_space_service_proto_msgTypes[21]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1216,7 +1252,7 @@ func (x *ListSpaceMembersResponse) String() string {
 func (*ListSpaceMembersResponse) ProtoMessage() {}
 
 func (x *ListSpaceMembersResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_api_v1_space_service_proto_msgTypes[20]
+	mi := &file_api_v1_space_service_proto_msgTypes[21]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1229,7 +1265,7 @@ func (x *ListSpaceMembersResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListSpaceMembersResponse.ProtoReflect.Descriptor instead.
 func (*ListSpaceMembersResponse) Descriptor() ([]byte, []int) {
-	return file_api_v1_space_service_proto_rawDescGZIP(), []int{20}
+	return file_api_v1_space_service_proto_rawDescGZIP(), []int{21}
 }
 
 func (x *ListSpaceMembersResponse) GetSpaceMembers() []*SpaceMember {
@@ -1256,7 +1292,7 @@ type GetSpaceMemberRequest struct {
 
 func (x *GetSpaceMemberRequest) Reset() {
 	*x = GetSpaceMemberRequest{}
-	mi := &file_api_v1_space_service_proto_msgTypes[21]
+	mi := &file_api_v1_space_service_proto_msgTypes[22]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1268,7 +1304,7 @@ func (x *GetSpaceMemberRequest) String() string {
 func (*GetSpaceMemberRequest) ProtoMessage() {}
 
 func (x *GetSpaceMemberRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_v1_space_service_proto_msgTypes[21]
+	mi := &file_api_v1_space_service_proto_msgTypes[22]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1281,7 +1317,7 @@ func (x *GetSpaceMemberRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetSpaceMemberRequest.ProtoReflect.Descriptor instead.
 func (*GetSpaceMemberRequest) Descriptor() ([]byte, []int) {
-	return file_api_v1_space_service_proto_rawDescGZIP(), []int{21}
+	return file_api_v1_space_service_proto_rawDescGZIP(), []int{22}
 }
 
 func (x *GetSpaceMemberRequest) GetName() string {
@@ -1303,7 +1339,7 @@ type UpdateSpaceMemberRequest struct {
 
 func (x *UpdateSpaceMemberRequest) Reset() {
 	*x = UpdateSpaceMemberRequest{}
-	mi := &file_api_v1_space_service_proto_msgTypes[22]
+	mi := &file_api_v1_space_service_proto_msgTypes[23]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1315,7 +1351,7 @@ func (x *UpdateSpaceMemberRequest) String() string {
 func (*UpdateSpaceMemberRequest) ProtoMessage() {}
 
 func (x *UpdateSpaceMemberRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_v1_space_service_proto_msgTypes[22]
+	mi := &file_api_v1_space_service_proto_msgTypes[23]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1328,7 +1364,7 @@ func (x *UpdateSpaceMemberRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UpdateSpaceMemberRequest.ProtoReflect.Descriptor instead.
 func (*UpdateSpaceMemberRequest) Descriptor() ([]byte, []int) {
-	return file_api_v1_space_service_proto_rawDescGZIP(), []int{22}
+	return file_api_v1_space_service_proto_rawDescGZIP(), []int{23}
 }
 
 func (x *UpdateSpaceMemberRequest) GetSpaceMember() *SpaceMember {
@@ -1355,7 +1391,7 @@ type DeleteSpaceMemberRequest struct {
 
 func (x *DeleteSpaceMemberRequest) Reset() {
 	*x = DeleteSpaceMemberRequest{}
-	mi := &file_api_v1_space_service_proto_msgTypes[23]
+	mi := &file_api_v1_space_service_proto_msgTypes[24]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1367,7 +1403,7 @@ func (x *DeleteSpaceMemberRequest) String() string {
 func (*DeleteSpaceMemberRequest) ProtoMessage() {}
 
 func (x *DeleteSpaceMemberRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_v1_space_service_proto_msgTypes[23]
+	mi := &file_api_v1_space_service_proto_msgTypes[24]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1380,7 +1416,7 @@ func (x *DeleteSpaceMemberRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DeleteSpaceMemberRequest.ProtoReflect.Descriptor instead.
 func (*DeleteSpaceMemberRequest) Descriptor() ([]byte, []int) {
-	return file_api_v1_space_service_proto_rawDescGZIP(), []int{23}
+	return file_api_v1_space_service_proto_rawDescGZIP(), []int{24}
 }
 
 func (x *DeleteSpaceMemberRequest) GetName() string {
@@ -1403,7 +1439,7 @@ type Space_Icon struct {
 
 func (x *Space_Icon) Reset() {
 	*x = Space_Icon{}
-	mi := &file_api_v1_space_service_proto_msgTypes[24]
+	mi := &file_api_v1_space_service_proto_msgTypes[25]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1415,7 +1451,7 @@ func (x *Space_Icon) String() string {
 func (*Space_Icon) ProtoMessage() {}
 
 func (x *Space_Icon) ProtoReflect() protoreflect.Message {
-	mi := &file_api_v1_space_service_proto_msgTypes[24]
+	mi := &file_api_v1_space_service_proto_msgTypes[25]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1524,7 +1560,8 @@ const file_api_v1_space_service_proto_rawDesc = "" +
 	"\x12memos.api.v1/SpaceR\x04name\"W\n" +
 	"!GetOrCreateSpaceScratchpadRequest\x122\n" +
 	"\x06parent\x18\x01 \x01(\tB\x1a\xe0A\x02\xfaA\x14\n" +
-	"\x12memos.api.v1/SpaceR\x06parent\"\x86\x01\n" +
+	"\x12memos.api.v1/SpaceR\x06parent\"&\n" +
+	"$GetOrCreatePersonalScratchpadRequest\"\x86\x01\n" +
 	"\x12UpdateSpaceRequest\x12.\n" +
 	"\x05space\x18\x01 \x01(\v2\x13.memos.api.v1.SpaceB\x03\xe0A\x02R\x05space\x12@\n" +
 	"\vupdate_mask\x18\x02 \x01(\v2\x1a.google.protobuf.FieldMaskB\x03\xe0A\x02R\n" +
@@ -1581,13 +1618,14 @@ const file_api_v1_space_service_proto_rawDesc = "" +
 	"updateMask\"P\n" +
 	"\x18DeleteSpaceMemberRequest\x124\n" +
 	"\x04name\x18\x01 \x01(\tB \xe0A\x02\xfaA\x1a\n" +
-	"\x18memos.api.v1/SpaceMemberR\x04name2\xd9\x13\n" +
+	"\x18memos.api.v1/SpaceMemberR\x04name2\xed\x14\n" +
 	"\fSpaceService\x12k\n" +
 	"\vCreateSpace\x12 .memos.api.v1.CreateSpaceRequest\x1a\x13.memos.api.v1.Space\"%\xdaA\x05space\x82\xd3\xe4\x93\x02\x17:\x05space\"\x0e/api/v1/spaces\x12j\n" +
 	"\n" +
 	"ListSpaces\x12\x1f.memos.api.v1.ListSpacesRequest\x1a .memos.api.v1.ListSpacesResponse\"\x19\xdaA\x00\x82\xd3\xe4\x93\x02\x10\x12\x0e/api/v1/spaces\x12f\n" +
 	"\bGetSpace\x12\x1d.memos.api.v1.GetSpaceRequest\x1a\x13.memos.api.v1.Space\"&\xdaA\x04name\x82\xd3\xe4\x93\x02\x19\x12\x17/api/v1/{name=spaces/*}\x12\xa3\x01\n" +
-	"\x1aGetOrCreateSpaceScratchpad\x12/.memos.api.v1.GetOrCreateSpaceScratchpadRequest\x1a\x13.memos.api.v1.Space\"?\xdaA\x06parent\x82\xd3\xe4\x93\x020:\x01*\"+/api/v1/{parent=spaces/*}/scratchpad:ensure\x12\x86\x01\n" +
+	"\x1aGetOrCreateSpaceScratchpad\x12/.memos.api.v1.GetOrCreateSpaceScratchpadRequest\x1a\x13.memos.api.v1.Space\"?\xdaA\x06parent\x82\xd3\xe4\x93\x020:\x01*\"+/api/v1/{parent=spaces/*}/scratchpad:ensure\x12\x91\x01\n" +
+	"\x1dGetOrCreatePersonalScratchpad\x122.memos.api.v1.GetOrCreatePersonalScratchpadRequest\x1a\x13.memos.api.v1.Space\"'\xdaA\x00\x82\xd3\xe4\x93\x02\x1e:\x01*\"\x19/api/v1/scratchpad:ensure\x12\x86\x01\n" +
 	"\vUpdateSpace\x12 .memos.api.v1.UpdateSpaceRequest\x1a\x13.memos.api.v1.Space\"@\xdaA\x11space,update_mask\x82\xd3\xe4\x93\x02&:\x05space2\x1d/api/v1/{space.name=spaces/*}\x12o\n" +
 	"\vDeleteSpace\x12 .memos.api.v1.DeleteSpaceRequest\x1a\x16.google.protobuf.Empty\"&\xdaA\x04name\x82\xd3\xe4\x93\x02\x19*\x17/api/v1/{name=spaces/*}\x12\xbd\x01\n" +
 	"\x15CreateSpaceInvitation\x12*.memos.api.v1.CreateSpaceInvitationRequest\x1a\x1d.memos.api.v1.SpaceInvitation\"Y\xdaA\x17parent,space_invitation\x82\xd3\xe4\x93\x029:\x10space_invitation\"%/api/v1/{parent=spaces/*}/invitations\x12\xa5\x01\n" +
@@ -1616,89 +1654,92 @@ func file_api_v1_space_service_proto_rawDescGZIP() []byte {
 }
 
 var file_api_v1_space_service_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
-var file_api_v1_space_service_proto_msgTypes = make([]protoimpl.MessageInfo, 25)
+var file_api_v1_space_service_proto_msgTypes = make([]protoimpl.MessageInfo, 26)
 var file_api_v1_space_service_proto_goTypes = []any{
-	(SpaceMember_Role)(0),                     // 0: memos.api.v1.SpaceMember.Role
-	(*Space)(nil),                             // 1: memos.api.v1.Space
-	(*SpaceMember)(nil),                       // 2: memos.api.v1.SpaceMember
-	(*SpaceInvitation)(nil),                   // 3: memos.api.v1.SpaceInvitation
-	(*CreateSpaceRequest)(nil),                // 4: memos.api.v1.CreateSpaceRequest
-	(*ListSpacesRequest)(nil),                 // 5: memos.api.v1.ListSpacesRequest
-	(*ListSpacesResponse)(nil),                // 6: memos.api.v1.ListSpacesResponse
-	(*GetSpaceRequest)(nil),                   // 7: memos.api.v1.GetSpaceRequest
-	(*GetOrCreateSpaceScratchpadRequest)(nil), // 8: memos.api.v1.GetOrCreateSpaceScratchpadRequest
-	(*UpdateSpaceRequest)(nil),                // 9: memos.api.v1.UpdateSpaceRequest
-	(*DeleteSpaceRequest)(nil),                // 10: memos.api.v1.DeleteSpaceRequest
-	(*CreateSpaceInvitationRequest)(nil),      // 11: memos.api.v1.CreateSpaceInvitationRequest
-	(*ListSpaceInvitationsRequest)(nil),       // 12: memos.api.v1.ListSpaceInvitationsRequest
-	(*ListSpaceInvitationsResponse)(nil),      // 13: memos.api.v1.ListSpaceInvitationsResponse
-	(*ListUserSpaceInvitationsRequest)(nil),   // 14: memos.api.v1.ListUserSpaceInvitationsRequest
-	(*ListUserSpaceInvitationsResponse)(nil),  // 15: memos.api.v1.ListUserSpaceInvitationsResponse
-	(*GetSpaceInvitationRequest)(nil),         // 16: memos.api.v1.GetSpaceInvitationRequest
-	(*DeleteSpaceInvitationRequest)(nil),      // 17: memos.api.v1.DeleteSpaceInvitationRequest
-	(*AcceptSpaceInvitationRequest)(nil),      // 18: memos.api.v1.AcceptSpaceInvitationRequest
-	(*DeclineSpaceInvitationRequest)(nil),     // 19: memos.api.v1.DeclineSpaceInvitationRequest
-	(*ListSpaceMembersRequest)(nil),           // 20: memos.api.v1.ListSpaceMembersRequest
-	(*ListSpaceMembersResponse)(nil),          // 21: memos.api.v1.ListSpaceMembersResponse
-	(*GetSpaceMemberRequest)(nil),             // 22: memos.api.v1.GetSpaceMemberRequest
-	(*UpdateSpaceMemberRequest)(nil),          // 23: memos.api.v1.UpdateSpaceMemberRequest
-	(*DeleteSpaceMemberRequest)(nil),          // 24: memos.api.v1.DeleteSpaceMemberRequest
-	(*Space_Icon)(nil),                        // 25: memos.api.v1.Space.Icon
-	(*fieldmaskpb.FieldMask)(nil),             // 26: google.protobuf.FieldMask
-	(*emptypb.Empty)(nil),                     // 27: google.protobuf.Empty
+	(SpaceMember_Role)(0),                        // 0: memos.api.v1.SpaceMember.Role
+	(*Space)(nil),                                // 1: memos.api.v1.Space
+	(*SpaceMember)(nil),                          // 2: memos.api.v1.SpaceMember
+	(*SpaceInvitation)(nil),                      // 3: memos.api.v1.SpaceInvitation
+	(*CreateSpaceRequest)(nil),                   // 4: memos.api.v1.CreateSpaceRequest
+	(*ListSpacesRequest)(nil),                    // 5: memos.api.v1.ListSpacesRequest
+	(*ListSpacesResponse)(nil),                   // 6: memos.api.v1.ListSpacesResponse
+	(*GetSpaceRequest)(nil),                      // 7: memos.api.v1.GetSpaceRequest
+	(*GetOrCreateSpaceScratchpadRequest)(nil),    // 8: memos.api.v1.GetOrCreateSpaceScratchpadRequest
+	(*GetOrCreatePersonalScratchpadRequest)(nil), // 9: memos.api.v1.GetOrCreatePersonalScratchpadRequest
+	(*UpdateSpaceRequest)(nil),                   // 10: memos.api.v1.UpdateSpaceRequest
+	(*DeleteSpaceRequest)(nil),                   // 11: memos.api.v1.DeleteSpaceRequest
+	(*CreateSpaceInvitationRequest)(nil),         // 12: memos.api.v1.CreateSpaceInvitationRequest
+	(*ListSpaceInvitationsRequest)(nil),          // 13: memos.api.v1.ListSpaceInvitationsRequest
+	(*ListSpaceInvitationsResponse)(nil),         // 14: memos.api.v1.ListSpaceInvitationsResponse
+	(*ListUserSpaceInvitationsRequest)(nil),      // 15: memos.api.v1.ListUserSpaceInvitationsRequest
+	(*ListUserSpaceInvitationsResponse)(nil),     // 16: memos.api.v1.ListUserSpaceInvitationsResponse
+	(*GetSpaceInvitationRequest)(nil),            // 17: memos.api.v1.GetSpaceInvitationRequest
+	(*DeleteSpaceInvitationRequest)(nil),         // 18: memos.api.v1.DeleteSpaceInvitationRequest
+	(*AcceptSpaceInvitationRequest)(nil),         // 19: memos.api.v1.AcceptSpaceInvitationRequest
+	(*DeclineSpaceInvitationRequest)(nil),        // 20: memos.api.v1.DeclineSpaceInvitationRequest
+	(*ListSpaceMembersRequest)(nil),              // 21: memos.api.v1.ListSpaceMembersRequest
+	(*ListSpaceMembersResponse)(nil),             // 22: memos.api.v1.ListSpaceMembersResponse
+	(*GetSpaceMemberRequest)(nil),                // 23: memos.api.v1.GetSpaceMemberRequest
+	(*UpdateSpaceMemberRequest)(nil),             // 24: memos.api.v1.UpdateSpaceMemberRequest
+	(*DeleteSpaceMemberRequest)(nil),             // 25: memos.api.v1.DeleteSpaceMemberRequest
+	(*Space_Icon)(nil),                           // 26: memos.api.v1.Space.Icon
+	(*fieldmaskpb.FieldMask)(nil),                // 27: google.protobuf.FieldMask
+	(*emptypb.Empty)(nil),                        // 28: google.protobuf.Empty
 }
 var file_api_v1_space_service_proto_depIdxs = []int32{
 	0,  // 0: memos.api.v1.Space.current_user_role:type_name -> memos.api.v1.SpaceMember.Role
-	25, // 1: memos.api.v1.Space.icon:type_name -> memos.api.v1.Space.Icon
+	26, // 1: memos.api.v1.Space.icon:type_name -> memos.api.v1.Space.Icon
 	0,  // 2: memos.api.v1.SpaceMember.role:type_name -> memos.api.v1.SpaceMember.Role
 	0,  // 3: memos.api.v1.SpaceInvitation.role:type_name -> memos.api.v1.SpaceMember.Role
 	1,  // 4: memos.api.v1.SpaceInvitation.space:type_name -> memos.api.v1.Space
 	1,  // 5: memos.api.v1.CreateSpaceRequest.space:type_name -> memos.api.v1.Space
 	1,  // 6: memos.api.v1.ListSpacesResponse.spaces:type_name -> memos.api.v1.Space
 	1,  // 7: memos.api.v1.UpdateSpaceRequest.space:type_name -> memos.api.v1.Space
-	26, // 8: memos.api.v1.UpdateSpaceRequest.update_mask:type_name -> google.protobuf.FieldMask
+	27, // 8: memos.api.v1.UpdateSpaceRequest.update_mask:type_name -> google.protobuf.FieldMask
 	3,  // 9: memos.api.v1.CreateSpaceInvitationRequest.space_invitation:type_name -> memos.api.v1.SpaceInvitation
 	3,  // 10: memos.api.v1.ListSpaceInvitationsResponse.space_invitations:type_name -> memos.api.v1.SpaceInvitation
 	3,  // 11: memos.api.v1.ListUserSpaceInvitationsResponse.space_invitations:type_name -> memos.api.v1.SpaceInvitation
 	2,  // 12: memos.api.v1.ListSpaceMembersResponse.space_members:type_name -> memos.api.v1.SpaceMember
 	2,  // 13: memos.api.v1.UpdateSpaceMemberRequest.space_member:type_name -> memos.api.v1.SpaceMember
-	26, // 14: memos.api.v1.UpdateSpaceMemberRequest.update_mask:type_name -> google.protobuf.FieldMask
+	27, // 14: memos.api.v1.UpdateSpaceMemberRequest.update_mask:type_name -> google.protobuf.FieldMask
 	4,  // 15: memos.api.v1.SpaceService.CreateSpace:input_type -> memos.api.v1.CreateSpaceRequest
 	5,  // 16: memos.api.v1.SpaceService.ListSpaces:input_type -> memos.api.v1.ListSpacesRequest
 	7,  // 17: memos.api.v1.SpaceService.GetSpace:input_type -> memos.api.v1.GetSpaceRequest
 	8,  // 18: memos.api.v1.SpaceService.GetOrCreateSpaceScratchpad:input_type -> memos.api.v1.GetOrCreateSpaceScratchpadRequest
-	9,  // 19: memos.api.v1.SpaceService.UpdateSpace:input_type -> memos.api.v1.UpdateSpaceRequest
-	10, // 20: memos.api.v1.SpaceService.DeleteSpace:input_type -> memos.api.v1.DeleteSpaceRequest
-	11, // 21: memos.api.v1.SpaceService.CreateSpaceInvitation:input_type -> memos.api.v1.CreateSpaceInvitationRequest
-	12, // 22: memos.api.v1.SpaceService.ListSpaceInvitations:input_type -> memos.api.v1.ListSpaceInvitationsRequest
-	14, // 23: memos.api.v1.SpaceService.ListUserSpaceInvitations:input_type -> memos.api.v1.ListUserSpaceInvitationsRequest
-	16, // 24: memos.api.v1.SpaceService.GetSpaceInvitation:input_type -> memos.api.v1.GetSpaceInvitationRequest
-	17, // 25: memos.api.v1.SpaceService.DeleteSpaceInvitation:input_type -> memos.api.v1.DeleteSpaceInvitationRequest
-	18, // 26: memos.api.v1.SpaceService.AcceptSpaceInvitation:input_type -> memos.api.v1.AcceptSpaceInvitationRequest
-	19, // 27: memos.api.v1.SpaceService.DeclineSpaceInvitation:input_type -> memos.api.v1.DeclineSpaceInvitationRequest
-	20, // 28: memos.api.v1.SpaceService.ListSpaceMembers:input_type -> memos.api.v1.ListSpaceMembersRequest
-	22, // 29: memos.api.v1.SpaceService.GetSpaceMember:input_type -> memos.api.v1.GetSpaceMemberRequest
-	23, // 30: memos.api.v1.SpaceService.UpdateSpaceMember:input_type -> memos.api.v1.UpdateSpaceMemberRequest
-	24, // 31: memos.api.v1.SpaceService.DeleteSpaceMember:input_type -> memos.api.v1.DeleteSpaceMemberRequest
-	1,  // 32: memos.api.v1.SpaceService.CreateSpace:output_type -> memos.api.v1.Space
-	6,  // 33: memos.api.v1.SpaceService.ListSpaces:output_type -> memos.api.v1.ListSpacesResponse
-	1,  // 34: memos.api.v1.SpaceService.GetSpace:output_type -> memos.api.v1.Space
-	1,  // 35: memos.api.v1.SpaceService.GetOrCreateSpaceScratchpad:output_type -> memos.api.v1.Space
-	1,  // 36: memos.api.v1.SpaceService.UpdateSpace:output_type -> memos.api.v1.Space
-	27, // 37: memos.api.v1.SpaceService.DeleteSpace:output_type -> google.protobuf.Empty
-	3,  // 38: memos.api.v1.SpaceService.CreateSpaceInvitation:output_type -> memos.api.v1.SpaceInvitation
-	13, // 39: memos.api.v1.SpaceService.ListSpaceInvitations:output_type -> memos.api.v1.ListSpaceInvitationsResponse
-	15, // 40: memos.api.v1.SpaceService.ListUserSpaceInvitations:output_type -> memos.api.v1.ListUserSpaceInvitationsResponse
-	3,  // 41: memos.api.v1.SpaceService.GetSpaceInvitation:output_type -> memos.api.v1.SpaceInvitation
-	27, // 42: memos.api.v1.SpaceService.DeleteSpaceInvitation:output_type -> google.protobuf.Empty
-	2,  // 43: memos.api.v1.SpaceService.AcceptSpaceInvitation:output_type -> memos.api.v1.SpaceMember
-	27, // 44: memos.api.v1.SpaceService.DeclineSpaceInvitation:output_type -> google.protobuf.Empty
-	21, // 45: memos.api.v1.SpaceService.ListSpaceMembers:output_type -> memos.api.v1.ListSpaceMembersResponse
-	2,  // 46: memos.api.v1.SpaceService.GetSpaceMember:output_type -> memos.api.v1.SpaceMember
-	2,  // 47: memos.api.v1.SpaceService.UpdateSpaceMember:output_type -> memos.api.v1.SpaceMember
-	27, // 48: memos.api.v1.SpaceService.DeleteSpaceMember:output_type -> google.protobuf.Empty
-	32, // [32:49] is the sub-list for method output_type
-	15, // [15:32] is the sub-list for method input_type
+	9,  // 19: memos.api.v1.SpaceService.GetOrCreatePersonalScratchpad:input_type -> memos.api.v1.GetOrCreatePersonalScratchpadRequest
+	10, // 20: memos.api.v1.SpaceService.UpdateSpace:input_type -> memos.api.v1.UpdateSpaceRequest
+	11, // 21: memos.api.v1.SpaceService.DeleteSpace:input_type -> memos.api.v1.DeleteSpaceRequest
+	12, // 22: memos.api.v1.SpaceService.CreateSpaceInvitation:input_type -> memos.api.v1.CreateSpaceInvitationRequest
+	13, // 23: memos.api.v1.SpaceService.ListSpaceInvitations:input_type -> memos.api.v1.ListSpaceInvitationsRequest
+	15, // 24: memos.api.v1.SpaceService.ListUserSpaceInvitations:input_type -> memos.api.v1.ListUserSpaceInvitationsRequest
+	17, // 25: memos.api.v1.SpaceService.GetSpaceInvitation:input_type -> memos.api.v1.GetSpaceInvitationRequest
+	18, // 26: memos.api.v1.SpaceService.DeleteSpaceInvitation:input_type -> memos.api.v1.DeleteSpaceInvitationRequest
+	19, // 27: memos.api.v1.SpaceService.AcceptSpaceInvitation:input_type -> memos.api.v1.AcceptSpaceInvitationRequest
+	20, // 28: memos.api.v1.SpaceService.DeclineSpaceInvitation:input_type -> memos.api.v1.DeclineSpaceInvitationRequest
+	21, // 29: memos.api.v1.SpaceService.ListSpaceMembers:input_type -> memos.api.v1.ListSpaceMembersRequest
+	23, // 30: memos.api.v1.SpaceService.GetSpaceMember:input_type -> memos.api.v1.GetSpaceMemberRequest
+	24, // 31: memos.api.v1.SpaceService.UpdateSpaceMember:input_type -> memos.api.v1.UpdateSpaceMemberRequest
+	25, // 32: memos.api.v1.SpaceService.DeleteSpaceMember:input_type -> memos.api.v1.DeleteSpaceMemberRequest
+	1,  // 33: memos.api.v1.SpaceService.CreateSpace:output_type -> memos.api.v1.Space
+	6,  // 34: memos.api.v1.SpaceService.ListSpaces:output_type -> memos.api.v1.ListSpacesResponse
+	1,  // 35: memos.api.v1.SpaceService.GetSpace:output_type -> memos.api.v1.Space
+	1,  // 36: memos.api.v1.SpaceService.GetOrCreateSpaceScratchpad:output_type -> memos.api.v1.Space
+	1,  // 37: memos.api.v1.SpaceService.GetOrCreatePersonalScratchpad:output_type -> memos.api.v1.Space
+	1,  // 38: memos.api.v1.SpaceService.UpdateSpace:output_type -> memos.api.v1.Space
+	28, // 39: memos.api.v1.SpaceService.DeleteSpace:output_type -> google.protobuf.Empty
+	3,  // 40: memos.api.v1.SpaceService.CreateSpaceInvitation:output_type -> memos.api.v1.SpaceInvitation
+	14, // 41: memos.api.v1.SpaceService.ListSpaceInvitations:output_type -> memos.api.v1.ListSpaceInvitationsResponse
+	16, // 42: memos.api.v1.SpaceService.ListUserSpaceInvitations:output_type -> memos.api.v1.ListUserSpaceInvitationsResponse
+	3,  // 43: memos.api.v1.SpaceService.GetSpaceInvitation:output_type -> memos.api.v1.SpaceInvitation
+	28, // 44: memos.api.v1.SpaceService.DeleteSpaceInvitation:output_type -> google.protobuf.Empty
+	2,  // 45: memos.api.v1.SpaceService.AcceptSpaceInvitation:output_type -> memos.api.v1.SpaceMember
+	28, // 46: memos.api.v1.SpaceService.DeclineSpaceInvitation:output_type -> google.protobuf.Empty
+	22, // 47: memos.api.v1.SpaceService.ListSpaceMembers:output_type -> memos.api.v1.ListSpaceMembersResponse
+	2,  // 48: memos.api.v1.SpaceService.GetSpaceMember:output_type -> memos.api.v1.SpaceMember
+	2,  // 49: memos.api.v1.SpaceService.UpdateSpaceMember:output_type -> memos.api.v1.SpaceMember
+	28, // 50: memos.api.v1.SpaceService.DeleteSpaceMember:output_type -> google.protobuf.Empty
+	33, // [33:51] is the sub-list for method output_type
+	15, // [15:33] is the sub-list for method input_type
 	15, // [15:15] is the sub-list for extension type_name
 	15, // [15:15] is the sub-list for extension extendee
 	0,  // [0:15] is the sub-list for field type_name
@@ -1709,7 +1750,7 @@ func file_api_v1_space_service_proto_init() {
 	if File_api_v1_space_service_proto != nil {
 		return
 	}
-	file_api_v1_space_service_proto_msgTypes[24].OneofWrappers = []any{
+	file_api_v1_space_service_proto_msgTypes[25].OneofWrappers = []any{
 		(*Space_Icon_Emoji)(nil),
 		(*Space_Icon_Lucide)(nil),
 	}
@@ -1719,7 +1760,7 @@ func file_api_v1_space_service_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_api_v1_space_service_proto_rawDesc), len(file_api_v1_space_service_proto_rawDesc)),
 			NumEnums:      1,
-			NumMessages:   25,
+			NumMessages:   26,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

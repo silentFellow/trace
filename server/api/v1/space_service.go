@@ -201,6 +201,25 @@ func (s *APIV1Service) GetOrCreateSpaceScratchpad(ctx context.Context, request *
 	return convertSpaceFromStore(scratchpad), nil
 }
 
+// GetOrCreatePersonalScratchpad returns the caller's parentless personal
+// Scratchpad, creating it on the first request. It backs the global Scratchpad
+// view's composer.
+func (s *APIV1Service) GetOrCreatePersonalScratchpad(ctx context.Context, _ *v1pb.GetOrCreatePersonalScratchpadRequest) (*v1pb.Space, error) {
+	currentUser, err := s.requireCurrentSpaceUser(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	scratchpad, created, err := s.Store.GetOrCreatePersonalScratchpad(ctx, currentUser.ID)
+	if err != nil {
+		return nil, mapSpaceMutationError(err, "failed to provision Scratchpad")
+	}
+	if created {
+		s.SSEHub.publishSpaceChanged()
+	}
+	return convertSpaceFromStore(scratchpad), nil
+}
+
 // UpdateSpace updates Space metadata.
 func (s *APIV1Service) UpdateSpace(ctx context.Context, request *v1pb.UpdateSpaceRequest) (*v1pb.Space, error) {
 	currentUser, err := s.requireCurrentSpaceUser(ctx)

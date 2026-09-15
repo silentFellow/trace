@@ -111,3 +111,45 @@ func TestDeleteParentSpaceDeletesChildScratchpads(t *testing.T) {
 	require.NoError(t, err)
 	require.Nil(t, deletedMemo)
 }
+
+func TestGetOrCreatePersonalScratchpadIsPrivateAndIdempotent(t *testing.T) {
+	ctx := context.Background()
+	ts := NewTestService(t)
+	defer ts.Cleanup()
+
+	owner, err := ts.CreateRegularUser(ctx, "personal-scratchpad-owner")
+	require.NoError(t, err)
+	other, err := ts.CreateRegularUser(ctx, "personal-scratchpad-other")
+	require.NoError(t, err)
+
+	ownerCtx := ts.CreateUserContext(ctx, owner.ID)
+	otherCtx := ts.CreateUserContext(ctx, other.ID)
+
+	personal, err := ts.Service.GetOrCreatePersonalScratchpad(ownerCtx, &apiv1.GetOrCreatePersonalScratchpadRequest{})
+	require.NoError(t, err)
+	require.True(t, personal.IsScratchpad)
+
+	again, err := ts.Service.GetOrCreatePersonalScratchpad(ownerCtx, &apiv1.GetOrCreatePersonalScratchpadRequest{})
+	require.NoError(t, err)
+	require.Equal(t, personal.Name, again.Name)
+
+	otherPersonal, err := ts.Service.GetOrCreatePersonalScratchpad(otherCtx, &apiv1.GetOrCreatePersonalScratchpadRequest{})
+	require.NoError(t, err)
+	require.NotEqual(t, personal.Name, otherPersonal.Name)
+
+	personalUID := personal.Name[len("spaces/"):]
+	stored, err := ts.Store.ListSpaces(ctx, &store.FindSpace{UID: &personalUID})
+	require.NoError(t, err)
+	require.Len(t, stored, 1)
+	require.True(t, stored[0].Payload.GetExcludeFromTimeline())
+	require.Empty(t, stored[0].Payload.GetParentSpaceUid())
+
+	_, err = ts.Service.CreateSpaceInvitation(ownerCtx, &apiv1.CreateSpaceInvitationRequest{
+		Parent: personal.Name,
+		SpaceInvitation: &apiv1.SpaceInvitation{
+			Invitee: apiv1server.BuildUserName(other.Username),
+			Role:    apiv1.SpaceMember_USER,
+		},
+	})
+	require.Equal(t, codes.FailedPrecondition, status.Code(err))
+}

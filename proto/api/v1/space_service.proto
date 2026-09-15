@@ -45,6 +45,17 @@ service SpaceService {
     option (google.api.method_signature) = "parent";
   }
 
+  // GetOrCreatePersonalScratchpad returns the caller's parentless personal
+  // Scratchpad, creating it on the first request. It backs the global
+  // Scratchpad view's composer.
+  rpc GetOrCreatePersonalScratchpad(GetOrCreatePersonalScratchpadRequest) returns (Space) {
+    option (google.api.http) = {
+      post: "/api/v1/scratchpad:ensure"
+      body: "*"
+    };
+    option (google.api.method_signature) = "";
+  }
+
   // UpdateSpace updates space metadata.
   rpc UpdateSpace(UpdateSpaceRequest) returns (Space) {
     option (google.api.http) = {
@@ -281,6 +292,8 @@ message GetOrCreateSpaceScratchpadRequest {
     (google.api.resource_reference) = {type: "memos.api.v1/Space"}
   ];
 }
+
+message GetOrCreatePersonalScratchpadRequest {}
 
 message UpdateSpaceRequest {
   // Required. The space with updated values.

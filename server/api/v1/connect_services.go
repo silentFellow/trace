@@ -542,6 +542,14 @@ func (s *ConnectServiceHandler) GetOrCreateSpaceScratchpad(ctx context.Context, 
 	return connect.NewResponse(resp), nil
 }
 
+func (s *ConnectServiceHandler) GetOrCreatePersonalScratchpad(ctx context.Context, req *connect.Request[v1pb.GetOrCreatePersonalScratchpadRequest]) (*connect.Response[v1pb.Space], error) {
+	resp, err := s.APIV1Service.GetOrCreatePersonalScratchpad(ctx, req.Msg)
+	if err != nil {
+		return nil, convertGRPCError(err)
+	}
+	return connect.NewResponse(resp), nil
+}
+
 func (s *ConnectServiceHandler) UpdateSpace(ctx context.Context, req *connect.Request[v1pb.UpdateSpaceRequest]) (*connect.Response[v1pb.Space], error) {
 	resp, err := s.APIV1Service.UpdateSpace(ctx, req.Msg)
 	if err != nil {
