@@ -4,13 +4,14 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Select, SelectContent, SelectItem, SelectTrigger } from "@/components/ui/select";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useSpaceContext } from "@/contexts/SpaceContext";
 import useCurrentUser from "@/hooks/useCurrentUser";
 import { useSpaces } from "@/hooks/useSpaceQueries";
 import { useTagCounts } from "@/hooks/useUserQueries";
 import type { LocalTimestampRange } from "@/lib/calendar-utils";
+import { formatSpaceUidForDisplay } from "@/lib/space-display";
 import type { Memo } from "@/types/proto/api/v1/memo_service_pb";
 import { useTranslate } from "@/utils/i18n";
 import { buildExportMarkdown } from "./buildExportMarkdown";
@@ -123,7 +124,9 @@ export function ExportDialog({ open, onOpenChange }: Props) {
       <DialogContent className="max-h-[85vh] overflow-y-auto sm:max-w-lg">
         <DialogHeader>
           <DialogTitle>{exportText("export.title")}</DialogTitle>
-          <DialogDescription>{exportText("export.current-view-description")}</DialogDescription>
+          <DialogDescription>
+            {tab === "current" ? exportText("export.current-view-description") : exportText("export.custom-description")}
+          </DialogDescription>
         </DialogHeader>
 
         <Tabs value={tab} onValueChange={(value) => setTab(value as ExportTab)}>
@@ -144,13 +147,17 @@ export function ExportDialog({ open, onOpenChange }: Props) {
               <Label>{exportText("export.scope")}</Label>
               <Select value={scope} onValueChange={setScope}>
                 <SelectTrigger className="w-full">
-                  <SelectValue />
+                  <span className="truncate">
+                    {scope === ALL_SPACES
+                      ? exportText("export.all-spaces")
+                      : spaces.find((space) => space.name === scope)?.title || formatSpaceUidForDisplay(scope)}
+                  </span>
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value={ALL_SPACES}>{exportText("export.all-spaces")}</SelectItem>
                   {spaces.map((space) => (
                     <SelectItem key={space.name} value={space.name}>
-                      {space.title || space.name}
+                      {space.title || formatSpaceUidForDisplay(space.name)}
                     </SelectItem>
                   ))}
                 </SelectContent>

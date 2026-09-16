@@ -356,6 +356,7 @@
     "current-view": "Current View",
     "current-view-description": "Exports exactly what's shown right now — the selected Space, active tags, and search.",
     "custom": "Custom Export",
+    "custom-description": "Choose a Space, date range, and tags. Scratchpad notes aren't included in exports.",
     "end-date": "End date",
     "exclude-tags": "Exclude tags",
     "exclude-tags-placeholder": "Search tags to exclude…",

@@ -356,6 +356,7 @@
     "current-view": "Cari Görünüş",
     "current-view-description": "Hazırda ekranda göründüyü kimi ixrac edir — seçilmiş Məkan, aktiv etiketlər və axtarış.",
     "custom": "Xüsusi İxrac",
+    "custom-description": "Məkan, tarix aralığı və etiketlər seçin. Scratchpad qeydləri ixraca daxil edilmir.",
     "end-date": "Bitiş tarixi",
     "exclude-tags": "Etiketləri xaric et",
     "exclude-tags-placeholder": "Xaric etmək üçün etiket axtar…",

@@ -26,13 +26,21 @@ vi.mock("@/components/Export/TagAutocompleteField", () => ({
     </div>
   ),
 }));
-vi.mock("@/hooks/useSpaceQueries", () => ({ useSpaces: () => ({ data: [] }) }));
+vi.mock("@/hooks/useSpaceQueries", () => ({
+  useSpaces: () => ({
+    data: [
+      { name: "spaces/abc", title: "Groceries" },
+      { name: "spaces/empty", title: "" },
+    ],
+  }),
+}));
 vi.mock("@/hooks/useUserQueries", () => ({
   useTagCounts: () => ({ data: { work: 2, idea: 1 } }),
   useUsersByUsernames: () => ({ data: [] }),
 }));
 vi.mock("@/hooks/useCurrentUser", () => ({ default: () => ({ name: "users/test" }) }));
-vi.mock("@/contexts/SpaceContext", () => ({ useSpaceContext: () => ({ selectedSpaceName: "" }) }));
+const spaceContextState = vi.hoisted(() => ({ selectedSpaceName: "" }));
+vi.mock("@/contexts/SpaceContext", () => ({ useSpaceContext: () => ({ selectedSpaceName: spaceContextState.selectedSpaceName }) }));
 vi.mock("@/components/ui/dialog", () => ({
   Dialog: ({ open, children }: { open: boolean; children: React.ReactNode }) => (open ? <>{children}</> : null),
   DialogContent: ({ children }: { children: React.ReactNode }) => <div role="dialog">{children}</div>,
@@ -98,6 +106,41 @@ describe("ExportDialog", () => {
     );
     expect(fetchCurrentViewMemos).not.toHaveBeenCalled();
     clickSpy.mockRestore();
+  });
+
+  it("describes the Current View tab scope", () => {
+    render(<ExportDialog open onOpenChange={() => {}} />);
+    expect(screen.getByText("export.current-view-description")).toBeInTheDocument();
+  });
+
+  it("describes the Custom tab with the scratchpad exclusion", () => {
+    render(<ExportDialog open onOpenChange={() => {}} />);
+    fireEvent.click(screen.getByRole("tab", { name: "export.custom" }));
+    expect(screen.getByText("export.custom-description")).toBeInTheDocument();
+    expect(screen.queryByText("export.current-view-description")).not.toBeInTheDocument();
+  });
+
+  it("shows space titles in the scope selector, never raw resource ids", () => {
+    render(<ExportDialog open onOpenChange={() => {}} />);
+    fireEvent.click(screen.getByRole("tab", { name: "export.custom" }));
+    fireEvent.click(screen.getByRole("combobox"));
+    expect(screen.getByRole("option", { name: "Groceries" })).toBeInTheDocument();
+    expect(screen.getByRole("option", { name: "empty" })).toBeInTheDocument();
+    expect(screen.queryByText("spaces/abc")).not.toBeInTheDocument();
+    expect(screen.queryByText("spaces/empty")).not.toBeInTheDocument();
+  });
+
+  it("shows the selected space title in the trigger, not its resource id", () => {
+    spaceContextState.selectedSpaceName = "spaces/abc";
+    try {
+      render(<ExportDialog open onOpenChange={() => {}} />);
+      fireEvent.click(screen.getByRole("tab", { name: "export.custom" }));
+      const trigger = screen.getByRole("combobox");
+      expect(trigger).toHaveTextContent("Groceries");
+      expect(trigger.textContent).not.toContain("spaces/");
+    } finally {
+      spaceContextState.selectedSpaceName = "";
+    }
   });
 
   it("shows the truncation notice instead of downloading when results overflow", async () => {
