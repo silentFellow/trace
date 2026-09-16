@@ -2,6 +2,7 @@
 
 Repository instructions for AI coding agents. Keep this file short, concrete, and tied to commands that actually work in this
 repo. If a fact here conflicts with source files or CI config, trust the source file and update this guide.
+Never touch the `main` branch — all work lands on `dev` or short-lived feature branches merged into `dev`.
 
 ## Rebranding
 
