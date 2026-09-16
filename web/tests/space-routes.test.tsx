@@ -7,7 +7,7 @@ import { getRouteActionPolicy, getSidebarRouteKind } from "@/components/AppSideb
 import { CalendarHeader } from "@/components/CalendarView/CalendarHeader";
 import { resolveMemoDetailOrigin, resolveMemoParentPage } from "@/components/MemoView/navigation";
 import Calendar from "@/pages/Calendar";
-import { buildCollectionPath, getSpaceSwitchPath, resolveCollectionRoute } from "@/router/routes";
+import { buildCollectionPath, collectionPathForLocation, getSpaceSwitchPath, resolveCollectionRoute } from "@/router/routes";
 import { SpaceRoute } from "@/router/SpaceRoute";
 
 const state = vi.hoisted(() => ({
@@ -49,6 +49,16 @@ describe("Space route contract", () => {
     expect(resolveCollectionRoute("/spaces/a%2Fb").isCollection).toBe(false);
     expect(resolveCollectionRoute("/spaces/A").spaceName).toBe("spaces/A");
     expect(buildCollectionPath("/calendar/2026/09", "spaces/A")).toBe("/spaces/A/calendar/2026/09");
+  });
+  it("keeps the parent Space in nav links built from a scratchpad page", () => {
+    expect(collectionPathForLocation("/", "/spaces/a/scratchpad")).toBe("/spaces/a");
+    expect(collectionPathForLocation("/explore", "/spaces/a/scratchpad")).toBe("/spaces/a/explore");
+  });
+  it("stays on the scratchpad view when switching Spaces from a scratchpad page", () => {
+    expect(getSpaceSwitchPath({ pathname: "/spaces/a/scratchpad", search: "" }, "spaces/b")).toBe("/spaces/b/scratchpad");
+  });
+  it("moves from the global scratchpad into the new Space's scratchpad", () => {
+    expect(getSpaceSwitchPath({ pathname: "/scratchpad", search: "" }, "spaces/b")).toBe("/spaces/b/scratchpad");
   });
   it("preserves collection parameters but drops unrelated global page parameters on switching", () => {
     expect(getSpaceSwitchPath({ pathname: "/spaces/a/explore", search: "?filter=tagSearch%3Ax" }, "spaces/b")).toBe(

@@ -80,12 +80,21 @@ export const buildCollectionPath = (pathname: string, spaceName?: string): strin
   return route.pathname === ROUTES.HOME ? base : `${base}${route.pathname}`;
 };
 
+/** Space owning a URL: collection scope first, then the Scratchpad parent (which is deliberately not a collection route). */
+export const resolveSpaceNameFromPath = (path: string): string | undefined =>
+  resolveCollectionRoute(path).spaceName ?? resolveSpaceScratchpadRoute(path)?.spaceName;
+
 /** Carries the current Space into another collection view. */
 export const collectionPathForLocation = (pathname: string, currentPath: string): string =>
-  buildCollectionPath(pathname, resolveCollectionRoute(currentPath).spaceName);
+  buildCollectionPath(pathname, resolveSpaceNameFromPath(currentPath));
 
 /** Switching preserves collection views and their query; other pages start at Home. */
 export const getSpaceSwitchPath = (location: { pathname: string; search: string; hash?: string }, spaceName?: string): string => {
+  // Stay in the scratchpad view across a switch; every other non-collection page starts at Home.
+  // The global view counts too: it has no parent Space, but switching into one should land in its scratchpad.
+  if (resolveSpaceScratchpadRoute(location.pathname) || matchPath(ROUTES.SCRATCHPAD, location.pathname)) {
+    return spaceName ? buildSpaceScratchpadPath(spaceName) : ROUTES.SCRATCHPAD;
+  }
   const route = resolveCollectionRoute(location.pathname);
   return route.isCollection
     ? `${buildCollectionPath(route.pathname, spaceName)}${location.search}${location.hash || ""}`
