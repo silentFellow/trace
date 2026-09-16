@@ -369,8 +369,8 @@ describe("App sidebar logo", () => {
     expect(footer).not.toHaveClass("px-3");
     expect(footer).not.toHaveClass("py-1");
     expect(footer).not.toHaveClass("py-1.5");
-    expect(footer?.childElementCount).toBe(2);
-    expect(within(footer as HTMLElement).getByRole("button", { name: "common.export" })).toBeInTheDocument();
+    expect(footer?.childElementCount).toBe(1);
+    expect(screen.getByRole("button", { name: "common.export" })).toBeInTheDocument();
     expect(screen.queryByRole("link", { name: /^common\.inbox/ })).not.toBeInTheDocument();
   });
 

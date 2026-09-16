@@ -14,9 +14,8 @@ export interface FetchExportMemosInput extends ExportFilterInput {
 
 const memoTime = (memo: Memo): number => Number(memo.createTime?.seconds ?? 0);
 
-export async function fetchExportMemos(input: FetchExportMemosInput): Promise<{ memos: Memo[]; truncated: boolean }> {
-  const filter = buildExportFilter(input);
-  const states = input.includeArchived ? [State.NORMAL, State.ARCHIVED] : [State.NORMAL];
+/** Pages every state, oldest-first, capped at `EXPORT_MEMO_LIMIT`. Shared by the Custom and Current-View export tabs. */
+export async function pageMemosForExport(filter: string | undefined, states: State[]): Promise<{ memos: Memo[]; truncated: boolean }> {
   const collected: Memo[] = [];
   for (const state of states) {
     let pageToken = "";
@@ -35,9 +34,14 @@ export async function fetchExportMemos(input: FetchExportMemosInput): Promise<{ 
       pageToken = response.nextPageToken;
     } while (pageToken);
   }
+  return { memos: collected.sort((a, b) => memoTime(a) - memoTime(b)), truncated: false };
+}
+
+export async function fetchExportMemos(input: FetchExportMemosInput): Promise<{ memos: Memo[]; truncated: boolean }> {
+  const filter = buildExportFilter(input);
+  const states = input.includeArchived ? [State.NORMAL, State.ARCHIVED] : [State.NORMAL];
+  const { memos, truncated } = await pageMemosForExport(filter, states);
+  if (truncated) return { memos: [], truncated: true };
   const excluded = new Set(input.excludeTags);
-  return {
-    memos: collected.filter((memo) => (memo.tags ?? []).every((tag) => !excluded.has(tag))).sort((a, b) => memoTime(a) - memoTime(b)),
-    truncated: false,
-  };
+  return { memos: memos.filter((memo) => (memo.tags ?? []).every((tag) => !excluded.has(tag))), truncated: false };
 }

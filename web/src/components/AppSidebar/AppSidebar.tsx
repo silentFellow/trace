@@ -85,6 +85,20 @@ const NewMemoAction = ({ onClick }: { onClick: () => void }) => {
   );
 };
 
+const ExportAction = ({ onClick }: { onClick: () => void }) => {
+  const t = useTranslate();
+  const label = t("common.export" as never);
+
+  return (
+    <Tooltip>
+      <TooltipTrigger render={<Button variant="outline" size="icon-compact" onClick={onClick} aria-label={label} />}>
+        <DownloadIcon className="size-4" strokeWidth={1.8} />
+      </TooltipTrigger>
+      <TooltipContent side="bottom">{label}</TooltipContent>
+    </Tooltip>
+  );
+};
+
 const ProfileNavigation = () => {
   const t = useTranslate();
   const { setMobileOpen } = useAppSidebar();
@@ -646,7 +660,10 @@ const AppSidebar = ({ className }: { className?: string }) => {
     <aside className={cn("flex h-full w-full select-none flex-col bg-sidebar text-sidebar-foreground", className)}>
       <div data-sidebar-header className={cn("flex h-13 shrink-0 items-center justify-between gap-2", SIDEBAR_RAIL_CLASSES)}>
         <SidebarBrand className="min-w-0" size="header" />
-        {canCompose && <NewMemoAction onClick={openEditor} />}
+        <div className="flex shrink-0 items-center gap-1.5">
+          {canCompose && <NewMemoAction onClick={openEditor} />}
+          {currentUser && <ExportAction onClick={() => setExportOpen(true)} />}
+        </div>
       </div>
       <GlobalNavigation />
       <div className="mx-3 mt-2 border-t border-border/70" />
@@ -654,23 +671,6 @@ const AppSidebar = ({ className }: { className?: string }) => {
         <RouteSidebarContent />
       </div>
       <footer className="shrink-0 border-t border-border/70">
-        {currentUser && (
-          <button
-            type="button"
-            onClick={() => setExportOpen(true)}
-            className={cn(
-              sidebarSurfaceVariants({ role: "account" }),
-              "group text-[13px] font-medium text-foreground transition-colors hover:bg-sidebar-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring/50",
-            )}
-          >
-            <span className={SIDEBAR_LEADING_SLOT_CLASSES}>
-              <DownloadIcon className="me-auto size-4 text-muted-foreground" strokeWidth={1.8} />
-            </span>
-            <span data-sidebar-label className="min-w-0 flex-1 truncate">
-              {t("common.export")}
-            </span>
-          </button>
-        )}
         {currentUser ? (
           <UserMenu />
         ) : (
