@@ -5,6 +5,7 @@ import {
   BellIcon,
   CalendarDaysIcon,
   ChevronDownIcon,
+  DownloadIcon,
   EarthIcon,
   FileAudioIcon,
   FileTextIcon,
@@ -23,8 +24,9 @@ import {
   Trash2Icon,
   UserRoundIcon,
 } from "lucide-react";
-import { type ReactNode, useEffect, useMemo } from "react";
+import { type ReactNode, useEffect, useMemo, useState } from "react";
 import { Link, matchPath, useLocation, useNavigate } from "react-router-dom";
+import { ExportDialog } from "@/components/Export/ExportDialog";
 import { MAP_MEMO_FILTER } from "@/components/MapView/useMapMemos";
 import { MemoDetailSidebar } from "@/components/MemoDetailSidebar";
 import { DEFAULT_SETTING_SECTION, SETTINGS_SECTIONS } from "@/components/Settings/settingSections";
@@ -77,6 +79,20 @@ const NewMemoAction = ({ onClick }: { onClick: () => void }) => {
     <Tooltip>
       <TooltipTrigger render={<Button variant="outline" size="icon-compact" onClick={onClick} aria-label={label} data-new-memo-trigger />}>
         <SquarePenIcon className="size-4" strokeWidth={1.8} />
+      </TooltipTrigger>
+      <TooltipContent side="bottom">{label}</TooltipContent>
+    </Tooltip>
+  );
+};
+
+const ExportAction = ({ onClick }: { onClick: () => void }) => {
+  const t = useTranslate();
+  const label = t("common.export" as never);
+
+  return (
+    <Tooltip>
+      <TooltipTrigger render={<Button variant="outline" size="icon-compact" onClick={onClick} aria-label={label} />}>
+        <DownloadIcon className="size-4" strokeWidth={1.8} />
       </TooltipTrigger>
       <TooltipContent side="bottom">{label}</TooltipContent>
     </Tooltip>
@@ -639,11 +655,15 @@ const AppSidebar = ({ className }: { className?: string }) => {
   const currentUser = useCurrentUser();
   const { setMobileOpen } = useAppSidebar();
   const { canOpen: canCompose, openEditor } = useGlobalMemoEditor();
+  const [exportOpen, setExportOpen] = useState(false);
   return (
     <aside className={cn("flex h-full w-full select-none flex-col bg-sidebar text-sidebar-foreground", className)}>
       <div data-sidebar-header className={cn("flex h-13 shrink-0 items-center justify-between gap-2", SIDEBAR_RAIL_CLASSES)}>
         <SidebarBrand className="min-w-0" size="header" />
-        {canCompose && <NewMemoAction onClick={openEditor} />}
+        <div className="flex shrink-0 items-center gap-1.5">
+          {canCompose && <NewMemoAction onClick={openEditor} />}
+          {currentUser && <ExportAction onClick={() => setExportOpen(true)} />}
+        </div>
       </div>
       <GlobalNavigation />
       <div className="mx-3 mt-2 border-t border-border/70" />
@@ -676,6 +696,7 @@ const AppSidebar = ({ className }: { className?: string }) => {
           </Link>
         )}
       </footer>
+      {exportOpen && <ExportDialog open={exportOpen} onOpenChange={setExportOpen} />}
     </aside>
   );
 };
