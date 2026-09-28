@@ -87,10 +87,11 @@ proto-format:
 
 # --- Docker (scripts/compose.yaml) ---
 
-# Build and publish the stable Docker image. Run `podman login docker.io` first.
+# Build and publish stable multi-architecture Docker images. Run `podman login docker.io` first.
 docker-publish: web-release
-    @podman build --file scripts/Dockerfile --target monolithic --build-arg VERSION=dev --build-arg COMMIT="$(git rev-parse --short HEAD)" --tag docker.io/silentfellow/trace:stable .
-    @podman push docker.io/silentfellow/trace:stable
+    @podman manifest rm localhost/trace:stable 2>/dev/null || podman rmi localhost/trace:stable 2>/dev/null || true
+    @podman build --jobs=3 --platform linux/amd64,linux/arm64,linux/arm/v7 --manifest localhost/trace:stable --file scripts/Dockerfile --target monolithic --build-arg VERSION=dev --build-arg COMMIT="$(git rev-parse --short HEAD)" .
+    @podman manifest push --all localhost/trace:stable docker://docker.io/silentfellow/trace:stable
 
 # Start the app via podman compose (detached).
 docker-up:
