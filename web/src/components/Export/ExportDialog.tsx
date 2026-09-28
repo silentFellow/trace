@@ -61,6 +61,7 @@ export function ExportDialog({ open, onOpenChange }: Props) {
   const [includeTags, setIncludeTags] = useState<string[]>([]);
   const [excludeTags, setExcludeTags] = useState<string[]>([]);
   const [includeArchived, setIncludeArchived] = useState(false);
+  const [groupByDate, setGroupByDate] = useState(true);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | undefined>(undefined);
   const [truncated, setTruncated] = useState(false);
@@ -107,7 +108,7 @@ export function ExportDialog({ open, onOpenChange }: Props) {
   const handleExportMarkdown = async () => {
     const memos = await collectMemos();
     if (!memos) return;
-    const markdown = buildExportMarkdown(memos, window.location.origin);
+    const markdown = buildExportMarkdown(memos, window.location.origin, { groupByDate });
     const url = URL.createObjectURL(new Blob([markdown], { type: "text/markdown" }));
     const anchor = document.createElement("a");
     anchor.href = url;
@@ -189,6 +190,11 @@ export function ExportDialog({ open, onOpenChange }: Props) {
             />
           </div>
         )}
+
+        <Label className="flex items-center gap-2">
+          <Checkbox checked={groupByDate} onCheckedChange={(checked) => setGroupByDate(checked === true)} />
+          {exportText("export.group-by-date")}
+        </Label>
 
         {(error || truncated) && <p className="text-sm text-destructive">{error ?? exportText("export.truncated")}</p>}
 
