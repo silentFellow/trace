@@ -362,6 +362,7 @@
     "exclude-tags-placeholder": "Search tags to exclude…",
     "export-markdown": "Export Markdown",
     "failed": "Export failed. Try again.",
+    "group-by-date": "Group notes by date",
     "include-archived": "Include archived notes",
     "include-tags": "Include tags",
     "include-tags-placeholder": "Search tags to include…",

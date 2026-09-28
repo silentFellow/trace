@@ -75,7 +75,14 @@ describe("ExportDialog", () => {
     expect(screen.getByText(/export.start-date/)).toBeInTheDocument();
     expect(screen.getByText(/export.end-date/)).toBeInTheDocument();
     expect(screen.getByText("export.scope")).toBeInTheDocument();
-    expect(screen.getByRole("checkbox")).toBeInTheDocument();
+    expect(screen.getByRole("checkbox", { name: "export.include-archived" })).toBeInTheDocument();
+  });
+
+  it("groups notes by date by default on both tabs", () => {
+    render(<ExportDialog open onOpenChange={() => {}} />);
+    expect(screen.getByRole("checkbox", { name: "export.group-by-date" })).toHaveAttribute("aria-checked", "true");
+    fireEvent.click(screen.getByRole("tab", { name: "export.custom" }));
+    expect(screen.getByRole("checkbox", { name: "export.group-by-date" })).toHaveAttribute("aria-checked", "true");
   });
 
   it("exports Markdown from the Current View filter by default", async () => {
